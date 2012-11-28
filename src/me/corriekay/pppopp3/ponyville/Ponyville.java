@@ -1,6 +1,7 @@
 package me.corriekay.pppopp3.ponyville;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.HashMap;
 
 import me.corriekay.pppopp3.Mane;
@@ -56,16 +57,30 @@ public final class Ponyville extends PSCmdExe{
 		pv.ponies.put(p.getName(), po);
 		return po;
 	}
-	
+	public static Pony getOfflinePony(Player p ){
+		return getOfflinePony(p.getName());
+	}
+	public static Pony getOfflinePony(String p){
+		Pony pony = getPony(p);
+		if(pony == null){
+			try {
+				return new Pony(p);
+			} catch (FileNotFoundException e) {
+				return null;
+			}
+		} else {
+			return pony;
+		}
+	}
 	@EventHandler
 	public void onJoin(PlayerJoinEvent event){
-		JoinEvent je = new JoinEvent(addPony(event.getPlayer()),true);
+		JoinEvent je = new JoinEvent(event.getPlayer(),addPony(event.getPlayer()),true);
 		Bukkit.getPluginManager().callEvent(je);
 		event.setJoinMessage(je.getMsg());
 	}
 	@EventHandler
 	public void onQuit(PlayerQuitEvent event){
-		QuitEvent qe = new QuitEvent(getPony(event.getPlayer()),true);
+		QuitEvent qe = new QuitEvent(event.getPlayer(),getPony(event.getPlayer()),true);
 		Bukkit.getPluginManager().callEvent(qe);
 		event.setQuitMessage(qe.getMsg());
 		Pony p = getPony(event.getPlayer());
