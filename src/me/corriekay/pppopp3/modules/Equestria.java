@@ -10,6 +10,7 @@ import me.corriekay.pppopp3.ponyville.Ponyville;
 import me.corriekay.pppopp3.utils.PSCmdExe;
 
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
@@ -31,10 +32,13 @@ public class Equestria extends PSCmdExe {
 
 	//world1: subworld. world2: parent world
 	private HashMap<World,World> worlds = new HashMap<World,World>();
+	private HashMap<World,GameMode> gamemodes = new HashMap<World,GameMode>();
+	private static Equestria e;
 	
 
 	public Equestria() throws Exception{
 		super("Equestria", new String[]{"test"});
+		e = this;
 		FileConfiguration worldconfig = YamlConfiguration.loadConfiguration(new FileInputStream(new File(Mane.getInstance().getDataFolder(),"equestria.yml")));
 		for(String world : worldconfig.getConfigurationSection("worldconfig").getKeys(false)){
 			Environment e = Environment.NORMAL;
@@ -45,8 +49,16 @@ public class Equestria extends PSCmdExe {
 				wt = WorldType.NORMAL;
 				System.out.println(world+" type is null, defaulting to normal");
 			}
+			GameMode gm;
+			try{
+				gm = GameMode.valueOf(worldconfig.getString("worldconfig."+world+".gamemode"));
+			} catch (Exception e1){
+				gm = GameMode.SURVIVAL;
+				System.out.println(world+" gamemode is null, defaulting to survival");
+			}
 			World w = loadWorld(world, e,wt);
 			worlds.put(w,w);
+			gamemodes.put(w,gm);
 			if(worldconfig.getBoolean("worldconfig."+world+".end")){
 				World end = loadWorld(world+"_the_end",Environment.THE_END,WorldType.LARGE_BIOMES);
 				worlds.put(end,w);
@@ -122,6 +134,7 @@ public class Equestria extends PSCmdExe {
 			player.getInventory().setArmorContents(pi.getArmorContents());
 			Pony.getWorldStats(player, toParent.getName());
 			p.save();
+			player.setGameMode(gamemodes.get(toParent));
 		}
 	}
 	@EventHandler
@@ -133,5 +146,8 @@ public class Equestria extends PSCmdExe {
 		World w = Bukkit.getWorld(args[0]);
 		((Player)sender).teleport(w.getSpawnLocation());
 		return true;
+	}
+	public static Equestria get() {
+		return e;
 	}
 }
