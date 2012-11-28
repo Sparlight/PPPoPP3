@@ -269,7 +269,7 @@ public abstract class PSCmdExe implements EventExecutor, CommandExecutor, Listen
 		}
 		File[] files = dir.listFiles();
 		for(File file : files){
-			String fname = file.getName().substring(0,file.getName().length()-4);
+			String fname = file.getName();
 			if(fname.toLowerCase().equals(pName)){
 				return fname;
 			}
