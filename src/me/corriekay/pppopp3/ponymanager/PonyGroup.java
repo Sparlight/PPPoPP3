@@ -3,6 +3,8 @@ package me.corriekay.pppopp3.ponymanager;
 import java.util.HashMap;
 import java.util.HashSet;
 
+import me.corriekay.pppopp3.modules.Equestria;
+
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
@@ -56,10 +58,7 @@ public class PonyGroup {
 		}
 	}
 	protected HashMap<String,Boolean> getPermissions(World w){
-		return getPermissions(w.getName());
-	}
-	protected HashMap<String,Boolean> getPermissions(String w){
-		return worldPerms.get(w).getPerms();
+		return worldPerms.get(Equestria.get().getParentWorld(w).getName()).getPerms();
 	}
 	protected boolean canMoveTo(Player asker){
 		return asker.hasPermission(perm2add2);
