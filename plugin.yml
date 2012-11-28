@@ -5,3 +5,33 @@ version: 0.0.1
 commands:
   test:
     description: derp1
+  setgroup:
+    description: changes a players group
+    usage: /setgroup <player> <group>
+    aliases: [manuadd]
+    permission: pppopp3.manuadd
+  list:
+    description: shows a list of online players
+    usage: /list
+    alises: [who, online]
+    permission: pppopp3.list
+  groupaddperm:
+    description: adds a permission to a group
+    usage: /groupaddperm <perm> <group>
+    permission: pppopp3.groupaddperm
+  groupdelperm:
+    description: deletes a groups permission
+    usage: /groupdelperm <perm> <group>
+    permission: pppopp3.groupdelperm
+  useraddperm:
+    description: adds a permission to a specific user
+    usage: /useraddperm <perm> <user>
+    permission: pppopp3.useraddperm
+  userdelperm:
+    description: deletes a permission from a user
+    usage: /userdelperm <perm> <user>
+    permission: pppopp3.userdelperm
+permissions:
+  pppopp3.pm.alertgroupchange:
+    description: sends messages to players alerting to group changes
+    default: false
