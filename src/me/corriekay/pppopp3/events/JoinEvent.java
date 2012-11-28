@@ -3,6 +3,7 @@ package me.corriekay.pppopp3.events;
 import me.corriekay.pppopp3.ponyville.Pony;
 
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
@@ -12,15 +13,17 @@ public class JoinEvent extends Event implements Cancellable{
 	private boolean cancelled = false;
 	private final boolean joining;
 	private final Pony pony;
+	private final Player player;
 	private static final HandlerList handlers = new HandlerList();
 	private String joinMessage;
 	private final String jmDef;
 
-	public JoinEvent(Pony pony, boolean isJoining){
+	public JoinEvent(Player player, Pony pony, boolean isJoining){
 		joining = isJoining;
 		jmDef = ChatColor.RED+pony.getNickname()+ChatColor.AQUA+" has returned to Equestria!";
 		joinMessage = jmDef;
 		this.pony = pony;
+		this.player = player;
 	}
 
 	@Override
@@ -58,5 +61,9 @@ public class JoinEvent extends Event implements Cancellable{
 	}
 	public Pony getPony(){
 		return pony;
+	}
+
+	public Player getPlayer() {
+		return player;
 	}
 }
