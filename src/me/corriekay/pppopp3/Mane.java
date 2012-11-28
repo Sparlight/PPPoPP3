@@ -3,6 +3,7 @@ package me.corriekay.pppopp3;
 import java.util.HashSet;
 
 import me.corriekay.pppopp3.modules.Equestria;
+import me.corriekay.pppopp3.modules.RemoteChest;
 import me.corriekay.pppopp3.ponymanager.PonyManager;
 import me.corriekay.pppopp3.ponyville.Ponyville;
 import me.corriekay.pppopp3.utils.PSCmdExe;
@@ -28,6 +29,7 @@ public class Mane extends JavaPlugin{
 		}
 		modules.add(new Ponyville());
 		modules.add(new PonyManager());
+		modules.add(new RemoteChest());
 	}
 	public void onDisable(){
 		

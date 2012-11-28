@@ -31,6 +31,20 @@ commands:
     description: deletes a permission from a user
     usage: /userdelperm <perm> <user>
     permission: pppopp3.userdelperm
+  c:
+    description: opens the remote chest for the world the player is currently in
+    usage: /c
+    aliases: [chest]
+    permission: pppopp3.remotechest
+  w:
+    description: opens up a mobile workbench
+    usage: /w
+    permission: pppopp3.remotechest
+  transferchest:
+    description: uses the transferchest utility
+    usage: /transferchest [type]
+    aliases: [ts]
+    permission: pppopp3.remotechest
 permissions:
   pppopp3.pm.alertgroupchange:
     description: sends messages to players alerting to group changes
