@@ -7,9 +7,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 
 import me.corriekay.pppopp3.Mane;
+import me.corriekay.pppopp3.modules.Equestria;
 import me.corriekay.pppopp3.utils.Utils;
 import net.minecraft.server.ItemStack;
 import net.minecraft.server.NBTCompressedStreamTools;
@@ -25,6 +27,7 @@ import net.minecraft.server.PlayerInventory;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
 import org.bukkit.craftbukkit.inventory.CraftInventoryPlayer;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
@@ -36,7 +39,8 @@ public class Pony {
 	
 	private final File datFile;
 	private final NBTTagCompound c;
-	private Inventory remoteChest;
+	private HashMap<String,Inventory> remoteChests = new HashMap<String,Inventory>();
+	private HashMap<Inventory,String> rcWorlds = new HashMap<Inventory,String>();
 	private OfflinePlayer op;
 	
 	public Pony(Player pone)throws FileNotFoundException{
@@ -45,8 +49,11 @@ public class Pony {
 	public Pony(String pone)throws FileNotFoundException{
 		datFile = new File(Mane.getInstance().getDataFolder()+File.separator+"Players",pone);
 		c = NBTCompressedStreamTools.a(new FileInputStream(datFile));
-		remoteChest = loadRemoteChest();
+		loadRemoteChest();
 		op = Bukkit.getOfflinePlayer(pone);
+	}
+	public World getRCWorld(Inventory i){
+		return Bukkit.getWorld(rcWorlds.get(i));
 	}
 	/*getters*/
 	public OfflinePlayer getPlayer(){
@@ -136,7 +143,7 @@ public class Pony {
 	public static void getWorldStats(Player p,String worldname){
 		Pony pony = Ponyville.getPony(p);
 		NBTTagCompound compound = pony.c.getCompound("worlds").getCompound(worldname);
-		if(compound == null){
+		if(!pony.c.getCompound("worlds").hasKey(worldname)){
 			for(PotionEffect e : p.getActivePotionEffects()){
 				p.removePotionEffect(e.getType());
 			}
@@ -172,7 +179,6 @@ public class Pony {
 		health = compound.getInt("health");
 		level = compound.getInt("level");
 		totalxp = compound.getInt("totalxp");
-		System.out.println("setting health to "+health);
 		p.setExhaustion(exhaustion);
 		p.setExp(exp);
 		p.setSaturation(saturation);
@@ -181,20 +187,26 @@ public class Pony {
 		p.setLevel(level);
 		p.setTotalExperience(totalxp);
 	}
-	public Inventory loadRemoteChest(){
-		NBTTagList invlist = c.getList("remotechest");
-		Inventory inv = Bukkit.getServer().createInventory(Bukkit.getPlayerExact(getName()), 54);
-		for(int i = 0; i<invlist.size(); i++){
-			NBTTagCompound itemC = (NBTTagCompound)invlist.get(i);
-			int index = itemC.getInt("index");
-			ItemStack is = ItemStack.a(itemC);
-			CraftItemStack cis = new CraftItemStack(is);
-			inv.setItem(index, cis);
+	public void loadRemoteChest(){
+		//TODO
+		NBTTagCompound rcCompound = c.getCompound("remotechest");
+		String[] worlds = new String[]{"world","badlands"};
+		for(String world : worlds){
+			NBTTagList invlist = rcCompound.getList(world);
+			Inventory inv = Bukkit.createInventory(Bukkit.getPlayerExact(getName()),54);
+			for(int i = 0; i<invlist.size(); i++){
+				NBTTagCompound itemC = (NBTTagCompound)invlist.get(i);
+				int index = itemC.getInt("index");
+				ItemStack is = ItemStack.a(itemC);
+				CraftItemStack cis = new CraftItemStack(is);
+				inv.setItem(index, cis);
+			}
+			rcWorlds.put(inv, world);
+			remoteChests.put(world,inv);
 		}
-		return inv;
 	}
-	public Inventory getRemoteChest(){
-		return remoteChest;
+	public Inventory getRemoteChest(World w){
+		return remoteChests.get(w.getName());
 	}
 	public String getEmoteName(){
 		return getEmote().getString("name");
@@ -398,19 +410,23 @@ public class Pony {
 		pony.c.getCompound("worlds").set(worldName, compound);
 		
 	}
-	public void saveRemoteChest(){
-		NBTTagList remoteChest = new NBTTagList();
-		for(int index = 0; index < getRemoteChest().getContents().length; index++){
-			CraftItemStack cis = (CraftItemStack) getRemoteChest().getItem(index);
-			if (cis != null) {
-				ItemStack is = ((CraftItemStack)cis).getHandle();
+	public void saveRemoteChest(World w){
+		if(w == null){
+			System.out.println("WARNING WORLD IS NULL! player: "+getPlayer().getName());
+		}
+		NBTTagList remotechest = new NBTTagList();
+		Inventory inv = getRemoteChest(w);
+		for(int index = 0; index < inv.getContents().length; index++){
+			CraftItemStack cis = (CraftItemStack) inv.getItem(index);
+			if(cis!=null){
+				ItemStack is = cis.getHandle();
 				NBTTagCompound c = new NBTTagCompound();
 				c = is.save(c);
 				c.set("index", new NBTTagInt("index",index));
-				remoteChest.add(c);
-			}
+				remotechest.add(c);
+			} 
 		}
-		c.set("remotechest",remoteChest);
+		c.getCompound("remotechest").set(Equestria.get().getParentWorld(w).getName().toLowerCase(),remotechest);
 	}
 	public void setEmoteName(String arg){
 		getEmote().set("name", new NBTTagString("name",arg));
@@ -549,7 +565,11 @@ public class Pony {
 		c.set("worlds",new NBTTagCompound());
 		
 		//set Remote Chest
-		c.set("remotechest", new NBTTagList());
+		NBTTagCompound rcCompound = new NBTTagCompound();
+		rcCompound.set("world", new NBTTagList());
+		rcCompound.set("badlands", new NBTTagList());
+		c.set("remotechest", rcCompound);
+		
 		
 		//emote
 		NBTTagCompound emote = new NBTTagCompound();
