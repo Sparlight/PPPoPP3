@@ -45,6 +45,10 @@ commands:
     usage: /transferchest [type]
     aliases: [ts]
     permission: pppopp3.remotechest
+  finddeaths:
+    description: finds the deaths of mobs in a radius around you
+    usage: /finddeaths <radius> <type> <days>
+    permission: pppopp3.finddeaths
 permissions:
   pppopp3.pm.alertgroupchange:
     description: sends messages to players alerting to group changes

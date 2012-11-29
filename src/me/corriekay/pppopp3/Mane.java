@@ -2,6 +2,7 @@ package me.corriekay.pppopp3;
 
 import java.util.HashSet;
 
+import me.corriekay.pppopp3.modules.EntityLogger;
 import me.corriekay.pppopp3.modules.Equestria;
 import me.corriekay.pppopp3.modules.RemoteChest;
 import me.corriekay.pppopp3.ponymanager.PonyManager;
@@ -21,15 +22,11 @@ public class Mane extends JavaPlugin{
 	
 	public void onEnable(){
 		instance = this;
-		try {
-			modules.add(new Equestria());
-		} catch (Exception e) {
-			System.out.println("Exception thrown loading Equestria");
-			e.printStackTrace();
-		}
+		try {modules.add(new Equestria());} catch (Exception e) {e.printStackTrace();}
 		modules.add(new Ponyville());
 		modules.add(new PonyManager());
 		modules.add(new RemoteChest());
+		try {modules.add(new EntityLogger());} catch (Exception e){e.printStackTrace();}
 	}
 	public void onDisable(){
 		
