@@ -1,12 +1,14 @@
 package me.corriekay.pppopp3.modules;
 
 import java.io.File;
-import java.sql.*;
 import java.lang.reflect.Method;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import me.corriekay.pppopp3.Mane;
 import me.corriekay.pppopp3.utils.PSCmdExe;
@@ -16,7 +18,6 @@ import me.corriekay.pppopp3.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -29,6 +30,7 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Sheep;
 import org.bukkit.entity.Tameable;
 import org.bukkit.entity.Villager;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -152,7 +154,7 @@ public class EntityLogger extends PSCmdExe {
 		if(targetEntity != null){
 			message+= " while targetting "+targetEntity;
 		}
-		logAttack(message, e.getType(),l, System.currentTimeMillis());
+		logAttack(message, e.getType(),l, System.currentTimeMillis(),event);
 	}
         
         /**
@@ -172,7 +174,7 @@ public class EntityLogger extends PSCmdExe {
                 
         }
         
-	private void logAttack(String message, EntityType et, Location loc, long timestamp) {
+	private void logAttack(String message, EntityType et, Location loc, long timestamp, Event event) {
 		//begin SparCode
                 String eName = et.getName().toLowerCase();
                 String world = loc.getWorld().getName();
@@ -197,12 +199,13 @@ public class EntityLogger extends PSCmdExe {
                             + "VALUES ('" + eName + "', '" + timestamp + "', '"
                                           + world + "', '" + message + "', '" + x + "', '"
                                            + y + "', '" + z + "')", true);
-                
+            		//end SparCode
             } catch (SQLException se) {
-                // TODO CorrieCode
-                // Sorry :<
+            	String exceptionMessage = "Error on event: "+se.getMessage()+"\n";
+            	exceptionMessage += "\n--- SQL Command Error ---\n";
+            	exceptionMessage += "MySQL Error Code:  " + se.getErrorCode() + " State: " + se.getSQLState();
+            	PonyLogger.logListenerException(se, exceptionMessage, name, event.getClass().getCanonicalName());
             }
-		//end SparCode
           } 
         // Command usage:  /finddeaths [mob [creeper | skeleton | enderman | cow | sheep | chicken | slime | zombie | pig | player]] 
         //                            [since [time]]
@@ -211,9 +214,6 @@ public class EntityLogger extends PSCmdExe {
 
 	private ArrayList<String> parseSQL(Location origin, String args[]){//EntityType et, int days, int distance, Location origin){
 		ArrayList<String> finds = new ArrayList<String>();
-		//TODO
-		//get the sql table via et.name() and iterate over the aforementioned id value
-		//for loop{//iterate
                 
                 ArrayList <String> pArgs = new ArrayList<String>(Arrays.asList(args));
                 String entity = "";
@@ -347,10 +347,11 @@ public class EntityLogger extends PSCmdExe {
                         double x = Double.parseDouble(rs.getString("x"));
                         double y = Double.parseDouble(rs.getString("y"));
                         double z = Double.parseDouble(rs.getString("z"));
-                        String worldString = rs.getString("world"); //get the world name
-                        World world = Bukkit.getWorld(worldString); //get the world instance of the worldString
-                        Location l = new Location(world,x,y,z);
-                        finds.add("["+Utils.getDate(timestampLong)+"]: "+message+" at x: "+x+" y: "+y+" z: "+z);
+                        String addTo = "["+Utils.getDate(timestampLong)+"]: "+message;
+                        if(coordinates){
+                        	addTo += " at x: "+x+" y: "+y+" z: "+z;
+                        }
+                        finds.add(addTo);
                     }
                 
                 } catch (SQLException se) {
@@ -362,16 +363,9 @@ public class EntityLogger extends PSCmdExe {
                     }
                     message += "\n--- SQL Command Error ---\n";
                     message += "MySQL Error Code:  " + se.getErrorCode() + " State: " + se.getSQLState();
-                    message += "\nStack Trace (including generated error):  \n";
-                    for (StackTraceElement ste : se.getStackTrace())
-                    {
-                        message += ste;
-                    }
                     PonyLogger.logCmdException(se, message, name);
-
                     sendMessage(console, "SQL Error!  Check the log for more details.");
                 }
-		//}
                 
                 // Corrie, you may find it useful to check if finds contains any
                 // data.  It's possible that nothing will be returned for the 
