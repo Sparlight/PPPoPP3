@@ -27,7 +27,7 @@ public abstract class PonyLogger {
 		}
 		try {
 			BufferedWriter out = new BufferedWriter(new FileWriter(file, true));
-			out.write("Exception thrown on "+errorMessage);
+			out.write(errorMessage);
 			out.newLine();
 			out.write("StackTrace:");
 			out.newLine();
