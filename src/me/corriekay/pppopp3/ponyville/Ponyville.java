@@ -21,7 +21,7 @@ public final class Ponyville extends PSCmdExe{
 	private static Ponyville pv;
 	
 	public Ponyville(){
-		super("Ponyville",null);
+		super("Ponyville");
 		pv = this;
 		File dir = new File(Mane.getInstance().getDataFolder()+File.separator+"Players");
 		if(!dir.isDirectory()){
