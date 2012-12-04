@@ -9,6 +9,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 
 import me.corriekay.pppopp3.Mane;
 import me.corriekay.pppopp3.utils.PSCmdExe;
@@ -23,6 +25,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Creature;
+import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -35,12 +38,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 
 public class EntityLogger extends PSCmdExe {
 
 	private final FileConfiguration config;
+    private Connection databaseConnection;
+    private final HashMap<String,ArrayList<String>> playerFinds = new HashMap<String,ArrayList<String>>();
         
-        private Connection databaseConnection;
         
 	public EntityLogger() throws Exception{
 		super("EntityLogger",new String[]{"finddeaths"});
@@ -55,29 +60,71 @@ public class EntityLogger extends PSCmdExe {
                         config.getString("database"), config.getString("login"),
                         config.getString("password"));
 	}
+	private void displayPage(Player p, int i){
+		ArrayList<String> finds = playerFinds.get(p.getName());
+		if(finds == null){
+			sendMessage(p,"No pages!");
+		} else {
+			int pages = (int)Math.ceil((double)finds.size()/15);
+			if(i>pages){
+				sendMessage(p,"Page not found!");
+			} else {
+				int maxPage = ((i-1)*15)+15;
+				p.sendMessage(ChatColor.GOLD+"Finds, page "+i+"/"+pages);
+				for(int page = ((i-1)*15);(page<maxPage)||(page>finds.size());page++){
+					String s;
+					try {
+						s = finds.get(page);
+					} catch (IndexOutOfBoundsException e) {
+						return;
+					}
+					p.sendMessage(ChatColor.GOLD+s);
+				}
+			}
+		}
+	}
 	public boolean handleCommand(final CommandSender sender, Command cmd, String label, final String[] args){
 		if(cmd.getName().equals("finddeaths")){
 			// /finddeaths <distance> <mobtype> <days>
-			if(args.length == 0){
-				sendMessage(sender,notEnoughArgs);
-				return true;
-			}
 			if(!(sender instanceof Player)){
 				sendMessage(sender,notPlayer);
 				return true;
 			}
-			
+			if(args.length == 0){
+				sendMessage(sender,"Find mob deaths by specifying any of the following: mob <mob>, area <distance>, and since <time> (example, would be 24h5m for 24 hours and 5 minutes (d,h,m,s). If you have logs, type /finddeaths page # to look at a specific page.");
+				return true;
+			}
+			final Player player = (Player)sender;
+			if(args[0].equals("page")){
+				if(args.length < 2){
+					sendMessage(player,notEnoughArgs);
+					return true;
+				}
+				ArrayList<String> pages = playerFinds.get(player.getName());
+				if(pages == null){
+					sendMessage(player,"No logs found!");
+					return true;
+				} else {
+					try {
+						int selPage = Integer.parseInt(args[1]);
+						displayPage(player,selPage);
+						return true;
+					} catch (NumberFormatException e) {
+						sendMessage(player,"Thats not a number!");
+						return true;
+					}
+				}
+			}
 			Bukkit.getScheduler().scheduleAsyncDelayedTask(Mane.getInstance(), new Runnable(){
 				public void run(){
-					
 					try{
-                                                ArrayList<String> finds = parseSQL(((Player)sender).getLocation(), args);
-						StringBuilder sb = new StringBuilder();
-						sb.append(ChatColor.GOLD+"");
-						for(String s : finds){
-							sb.append(s+"\n");
-						}
-						sender.sendMessage(sb.toString());
+                        ArrayList<String> finds = parseSQL(player.getLocation(), args);
+                        Collections.reverse(finds);
+                        if(finds.size() == 0){
+                        	finds = null;
+                        }
+                        playerFinds.put(player.getName(), finds);
+                        displayPage(player,1);
 						return;
 					} catch (Exception e){
 						sendMessage(sender,"Check your arguments! Something went wrong!");
@@ -88,6 +135,22 @@ public class EntityLogger extends PSCmdExe {
 			
 		}
 		return true;
+	}
+	@EventHandler
+	public void entityExplode(EntityExplodeEvent event){
+		if(event.getEntity() instanceof Creeper){
+			Creeper c = (Creeper)event.getEntity();
+			Entity target = c.getTarget();
+			String message = "Creeper exploded";
+			if(target != null){
+				message+=" while targetting "+target.getType().name().toLowerCase();
+				if(target instanceof Player){
+					Player p = (Player)target;
+					message+=" "+p.getName();
+				}
+			}
+			logAttack(message, EntityType.CREEPER, c.getLocation(), System.currentTimeMillis(), event);
+		}
 	}
 	@EventHandler 
 	public void entityEvent(EntityDeathEvent event){
@@ -147,7 +210,11 @@ public class EntityLogger extends PSCmdExe {
 				whokilled = killer.getType().name().toLowerCase();
 			}
 		} else {
-			whokilled = ede.getCause().name().toLowerCase();
+			try {
+				whokilled = ede.getCause().name().toLowerCase();
+			} catch (NullPointerException e1) {
+				whokilled = "Unknown killer (probably sun death)";
+			}
 		}
 		String message;
 		message = whokilled+" killed "+deadEntity;
@@ -344,12 +411,12 @@ public class EntityLogger extends PSCmdExe {
                     {
                         String message = rs.getString("message"); //get message for each sql
                         long timestampLong = Long.parseLong(rs.getString("timestamp")); // get timestamp
-                        double x = Double.parseDouble(rs.getString("x"));
-                        double y = Double.parseDouble(rs.getString("y"));
-                        double z = Double.parseDouble(rs.getString("z"));
+                        int x = (int)Double.parseDouble(rs.getString("x"));
+                        int y = (int)Double.parseDouble(rs.getString("y"));
+                        int z = (int)Double.parseDouble(rs.getString("z"));
                         String addTo = "["+Utils.getDate(timestampLong)+"]: "+message;
                         if(coordinates){
-                        	addTo += " at x: "+x+" y: "+y+" z: "+z;
+                        	addTo += " at "+x+", "+y+", "+z;
                         }
                         finds.add(addTo);
                     }
