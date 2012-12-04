@@ -37,6 +37,9 @@ public abstract class PSCmdExe implements EventExecutor, CommandExecutor, Listen
 	protected final String notEnoughArgs = pinkieSays+"Uh oh, youre gonna need to provide more arguments for that command than that!";
 	protected final String cantFindPlayer = pinkieSays+"I looked high and low, but I couldnt find that pony! :C";
 	
+	public PSCmdExe(String name){
+		this(name,null);
+	}
 	@SuppressWarnings("unchecked")
 	public PSCmdExe(String name, String[] cmds){
 		this.name = name;
