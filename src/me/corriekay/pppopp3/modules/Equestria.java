@@ -1,10 +1,7 @@
 package me.corriekay.pppopp3.modules;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.util.HashMap;
 
-import me.corriekay.pppopp3.Mane;
 import me.corriekay.pppopp3.ponyville.Pony;
 import me.corriekay.pppopp3.ponyville.Ponyville;
 import me.corriekay.pppopp3.utils.PSCmdExe;
@@ -19,10 +16,12 @@ import org.bukkit.WorldType;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -37,9 +36,9 @@ public class Equestria extends PSCmdExe {
 	
 
 	public Equestria() throws Exception{
-		super("Equestria", new String[]{"test"});
+		super("Equestria", "test");
 		e = this;
-		FileConfiguration worldconfig = YamlConfiguration.loadConfiguration(new FileInputStream(new File(Mane.getInstance().getDataFolder(),"equestria.yml")));
+		FileConfiguration worldconfig = getNamedConfig("equestria.yml");
 		for(String world : worldconfig.getConfigurationSection("worldconfig").getKeys(false)){
 			Environment e = Environment.NORMAL;
 			WorldType wt;
@@ -56,7 +55,7 @@ public class Equestria extends PSCmdExe {
 				gm = GameMode.SURVIVAL;
 				System.out.println(world+" gamemode is null, defaulting to survival");
 			}
-			World w = loadWorld(world, e,wt);
+			World w = loadWorld(world,e,wt);
 			worlds.put(w,w);
 			gamemodes.put(w,gm);
 			if(worldconfig.getBoolean("worldconfig."+world+".end")){
@@ -68,7 +67,14 @@ public class Equestria extends PSCmdExe {
 				worlds.put(nether,w);
 			}
 		}
-		
+		for(Entity e : Bukkit.getWorld("equestria").getEntities()){
+			if(e instanceof LivingEntity){
+				LivingEntity le = (LivingEntity)e;
+				if(!(le instanceof Player)){
+					le.remove();
+				}
+			}
+		}
 	}
 	public World loadWorld(String worldname, Environment e,WorldType wt){
 		World w = Bukkit.getWorld(worldname);
@@ -77,6 +83,9 @@ public class Equestria extends PSCmdExe {
 		}
 		WorldCreator wc = new WorldCreator(worldname);
 		wc.environment(e).type(wt);
+		if(worldname.equals("equestria")){
+			wc.generateStructures(false);
+		}
 		return wc.createWorld();
 	}
 	public World getParentWorld(World world){
@@ -141,6 +150,12 @@ public class Equestria extends PSCmdExe {
 	public void playerRespawn(PlayerRespawnEvent event){
 		World w = getParentWorld(event.getPlayer().getLocation().getWorld());
 		event.setRespawnLocation(w.getSpawnLocation());
+	}
+	@EventHandler
+	public void spawn(CreatureSpawnEvent event){
+		if(event.getLocation().getWorld().getName().equals("equestria")){
+			event.setCancelled(true);
+		}
 	}
 	public boolean handleCommand(CommandSender sender, Command cmd, String label, String[] args){
 		World w = Bukkit.getWorld(args[0]);
