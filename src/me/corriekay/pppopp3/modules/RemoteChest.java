@@ -18,7 +18,7 @@ public class RemoteChest extends PSCmdExe {
 
 	private HashMap<String,Inventory> viewingInvs = new HashMap<String,Inventory>();
 	public RemoteChest(){
-		super("RemoteChest",new String[]{"c","w","transferchest"});
+		super("RemoteChest","c","w","transferchest");
 	}
 	public boolean handleCommand(CommandSender sender, Command cmd, String label, String[] args){
 		String cmdn = cmd.getName();

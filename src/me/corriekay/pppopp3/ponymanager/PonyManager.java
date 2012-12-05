@@ -1,7 +1,5 @@
 package me.corriekay.pppopp3.ponymanager;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -22,7 +20,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -32,8 +29,7 @@ public class PonyManager extends PSCmdExe {
 	
 	public static PonyManager ponyManager;
 	private HashMap<String,PonyGroup> groups = new HashMap<String,PonyGroup>();
-	private final File file = new File(Mane.getInstance().getDataFolder()+File.separator+"permissions.yml");
-	private final FileConfiguration groupConfig = YamlConfiguration.loadConfiguration(file);
+	private final FileConfiguration groupConfig = getNamedConfig("permissions.yml");
 	private final HashMap<String,HashSet<String>> groupsList = new HashMap<String,HashSet<String>>();
 	private final HashMap<String,PermissionAttachment> playerPerms = new HashMap<String,PermissionAttachment>();
 	private PermissionAttachment consolePerms= Bukkit.getConsoleSender().addAttachment(Mane.getInstance());
@@ -343,11 +339,7 @@ public class PonyManager extends PSCmdExe {
 		return message;
 	}
 	private void saveConfig(){
-		try {
-			groupConfig.save(file);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		saveNamedConfig("permissions.yml",groupConfig);
 	}
 	public static String getGroup(Player player){
 		return getGroup(player.getName());

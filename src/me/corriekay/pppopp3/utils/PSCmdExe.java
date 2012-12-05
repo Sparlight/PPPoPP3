@@ -2,6 +2,7 @@ package me.corriekay.pppopp3.utils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -19,6 +20,8 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventException;
@@ -37,11 +40,8 @@ public abstract class PSCmdExe implements EventExecutor, CommandExecutor, Listen
 	protected final String notEnoughArgs = pinkieSays+"Uh oh, youre gonna need to provide more arguments for that command than that!";
 	protected final String cantFindPlayer = pinkieSays+"I looked high and low, but I couldnt find that pony! :C";
 	
-	public PSCmdExe(String name){
-		this(name,null);
-	}
 	@SuppressWarnings("unchecked")
-	public PSCmdExe(String name, String[] cmds){
+	public PSCmdExe(String name, String...cmds){
 		this.name = name;
 		for(Method method : this.getClass().getMethods()){
 			method.setAccessible(true);
@@ -107,7 +107,7 @@ public abstract class PSCmdExe implements EventExecutor, CommandExecutor, Listen
 			return false;
 		}
 	}
-	public boolean handleCommand(CommandSender sender, Command cmd, String label, String[] args){
+	public boolean handleCommand(CommandSender sender, Command cmd, String label, String[] args) throws Exception{
 		return false;
 	}
 	public void logAdmin(CommandSender sender, String message){
@@ -127,6 +127,18 @@ public abstract class PSCmdExe implements EventExecutor, CommandExecutor, Listen
          */
 	public void sendMessage(CommandSender sender, String message){
 		sender.sendMessage(pinkieSays+message);
+	}
+	/**
+     * Sends a message to a CommandSender prepended with "Pinkie Pie: ", through the main thread.
+     * @param sender CommandSender object to issue a command to.
+     * @param message Message to send to sender.
+     */
+	public void sendSyncMessage(final CommandSender sender, final String message){
+		Bukkit.getScheduler().scheduleSyncDelayedTask(Mane.getInstance(), new Runnable(){
+			public void run(){
+				sender.sendMessage(pinkieSays+message);
+			}
+		});
 	}
 
 	/*methods for getting players*/
@@ -302,6 +314,24 @@ public abstract class PSCmdExe implements EventExecutor, CommandExecutor, Listen
 		console.sendMessage(message);
 		//RemotePonyAdmin.rpa.message(message); //TODO
 		
+	}
+	public void saveNamedConfig(String name, FileConfiguration config){
+		try {
+			config.save(new File(Mane.getInstance().getDataFolder(),name));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	public FileConfiguration getNamedConfig(String name){
+		File file = new File(Mane.getInstance().getDataFolder(),name);
+		if(!file.exists()){
+			try {
+				file.createNewFile();
+			} catch (IOException e) {
+				return null;
+			}
+		}
+		return YamlConfiguration.loadConfiguration(file);
 	}
 
 	public void deactivate(){
