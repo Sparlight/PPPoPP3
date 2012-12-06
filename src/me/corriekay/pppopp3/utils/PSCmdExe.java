@@ -337,7 +337,4 @@ public abstract class PSCmdExe implements EventExecutor, CommandExecutor, Listen
 	public void deactivate(){
 		
 	}
-	public void reload(){
-		
-	}
 }
