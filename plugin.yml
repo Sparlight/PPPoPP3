@@ -49,15 +49,18 @@ commands:
     description: finds the deaths of mobs in a radius around you
     usage: /finddeaths <radius> <type> <days>
     permission: pppopp3.finddeaths
-  registercreativearea:
+  claimplot:
     description: registers an area for private creative use
-    usage: /registercreativearea
-    permissions: pppopp3.registercreativearea
-  unregistercreativearea:
+    usage: /claimplot
+    permissions: pppopp3.claimplot
+  releaseplot:
     description: unregisters an area
-    usage: /unregistercreativearea
-    permissions: pppopp3.unregistercreativearea
+    usage: /releaseplot
+    permissions: pppopp3.releaseplot
 permissions:
   pppopp3.pm.alertgroupchange:
     description: sends messages to players alerting to group changes
+    default: false
+  pppopp3.creativeadmin:
+    description: allows a person to bypass pppopp3 creative checks
     default: false

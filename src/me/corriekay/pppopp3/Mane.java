@@ -31,6 +31,8 @@ public class Mane extends JavaPlugin{
 		modules.add(new WorldEditHookModule());
 	}
 	public void onDisable(){
-		
+		for(PSCmdExe exe : modules){
+			exe.deactivate();
+		}
 	}
 }
