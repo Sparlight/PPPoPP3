@@ -6,10 +6,10 @@ import java.util.HashSet;
 import me.corriekay.pppopp3.modules.Equestria;
 
 import org.bukkit.World;
-import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.Permissible;
 
 public class PonyGroup {
 
@@ -19,7 +19,7 @@ public class PonyGroup {
 	
 	public PonyGroup(FileConfiguration config, String name){
 		this.name = name;
-		perm2add2 = config.getString("group."+name+".perm2add2");
+		perm2add2 = config.getString("groups."+name+".perm2add2");
 		HashMap<String,Boolean> globalPerms = new HashMap<String,Boolean>();
 		{//get global perms
 			HashSet<String> negPerms = new HashSet<String>();
@@ -66,7 +66,7 @@ public class PonyGroup {
 	protected boolean canMoveTo(ConsoleCommandSender asker){
 		return asker.hasPermission(perm2add2);
 	}
-	protected boolean canMoveTo(CommandSender asker){
+	protected boolean canMoveTo(Permissible asker){
 		return asker.hasPermission(perm2add2);
 	}
 	protected String getName(){
