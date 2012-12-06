@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import me.corriekay.pppopp3.ponyville.Pony;
 import me.corriekay.pppopp3.ponyville.Ponyville;
+import me.corriekay.pppopp3.utils.FlatWorldGenerator;
 import me.corriekay.pppopp3.utils.PSCmdExe;
 
 import org.bukkit.Bukkit;
@@ -85,6 +86,7 @@ public class Equestria extends PSCmdExe {
 		wc.environment(e).type(wt);
 		if(worldname.equals("equestria")){
 			wc.generateStructures(false);
+			wc.generator(new FlatWorldGenerator());
 		}
 		return wc.createWorld();
 	}
