@@ -348,4 +348,16 @@ public class PonyManager extends PSCmdExe {
 		Pony p = Ponyville.getOfflinePony(player);
 		return(p.getGroup());
 	}
+	public void deactivate(){
+		for(Player p : Bukkit.getOnlinePlayers()){
+			PermissionAttachment pa = playerPerms.get(p.getName());
+			if(pa!=null){
+				try {
+					p.removeAttachment(pa);
+				} catch (Exception e) {
+					continue;
+				}
+			}
+		}
+	}
 }
