@@ -2,6 +2,7 @@ package me.corriekay.pppopp3;
 
 import java.util.HashSet;
 
+import me.corriekay.pppopp3.chat.ChatHandler;
 import me.corriekay.pppopp3.modules.EntityLogger;
 import me.corriekay.pppopp3.modules.Equestria;
 import me.corriekay.pppopp3.modules.RemoteChest;
@@ -29,6 +30,7 @@ public class Mane extends JavaPlugin{
 		modules.add(new RemoteChest());
 		try {modules.add(new EntityLogger());} catch (Exception e){e.printStackTrace();}
 		modules.add(new WorldEditHookModule());
+		try{modules.add(new ChatHandler());}catch(Exception e){e.printStackTrace();}
 	}
 	public void onDisable(){
 		for(PSCmdExe exe : modules){

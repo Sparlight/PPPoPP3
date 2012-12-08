@@ -5,6 +5,8 @@ version: 0.0.1
 commands:
   test:
     description: derp1
+  testperm:
+    description: tests permission for a player
   setgroup:
     description: changes a players group
     usage: /setgroup <player> <group>
@@ -57,6 +59,49 @@ commands:
     description: unregisters an area
     usage: /releaseplot
     permissions: pppopp3.releaseplot
+  join:
+    description: used to join a channel
+    usage: /join <channel>
+    permission: pppopp3.channel
+    aliases: [ch, focus]
+  leave:
+    description: used to leave a channel
+    usage: /leave <channel>
+    permission: pppopp3.channel
+  channel:
+    description: lists channels, and allows a user to send a quick message to another channel without joining it
+    usage: /channel or /<quick> <message>
+    permission: pppopp3.channel
+    aliases: [eq, equestria, d, donator, rp, roleplay, staff, ssss, nsfw]
+  say:
+    description: send message from the console
+    usage: /say <message>
+    permission: pppopp3.say
+  me:
+    description: sends a basic emote to the channel youre in
+    usage: /me <emote>
+    permission: pppopp3.me
+  mute:
+    description: mutes/unmutes a player
+    usage: /mute <player>
+    permission: pppopp3.channel
+  pm:
+    description: privately messages another player
+    usage: /pm <player> <message>
+    permission: pppopp3.pm
+    aliases: [tell, msg, whisper]
+  r:
+    description: replies to the last user to pm you
+    usage: /r <message>
+    permission: pppopp3.pm
+  silence:
+    description: silence or unsilence someone
+    usage: /silence <name>
+    permission: pppopp3.silence
+  silenced:
+    description: lists the silenced players for a user
+    usage: /silenced
+    permission: pppopp3.silence
 permissions:
   pppopp3.pm.alertgroupchange:
     description: sends messages to players alerting to group changes
