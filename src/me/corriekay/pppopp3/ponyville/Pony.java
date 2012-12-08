@@ -91,7 +91,7 @@ public class Pony {
 		return nicks;
 	}
 	public String getChatChannel(){
-		return c.getString("chatchannel");
+		return c.getString("chatChannel");
 	}
 	public HashSet<String> getListeningChannels(){
 		HashSet<String> chans = new HashSet<String>();
