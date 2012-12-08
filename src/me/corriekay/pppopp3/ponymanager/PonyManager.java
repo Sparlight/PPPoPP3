@@ -63,6 +63,7 @@ public class PonyManager extends PSCmdExe {
 			calculatePerms(player,null);
 		}
 	}
+	@SuppressWarnings("unchecked")
 	private void calculatePerms(Player player, World w){
 		PermissionAttachment pa = playerPerms.get(player.getName());
 		if(pa!=null){
@@ -77,9 +78,9 @@ public class PonyManager extends PSCmdExe {
 		PonyGroup group = groups.get(p.getGroup());
 		HashMap<String,Boolean> perms = null;
 		if(w==null){
-			perms = group.getPermissions(player.getWorld());
+			perms = (HashMap<String, Boolean>) group.getPermissions(player.getWorld()).clone();
 		} else {
-			perms = group.getPermissions(w);
+			perms = (HashMap<String, Boolean>) group.getPermissions(w).clone();
 		}
 		{
 			HashSet<String> negPerms = new HashSet<String>();
