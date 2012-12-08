@@ -257,7 +257,6 @@ public class WorldEditHookModule extends PSCmdExe {
 	}
 	private boolean canModify(Location l, Player p){
 		if(p.hasPermission("pppopp3.creativeadmin")){
-			System.out.println(2);
 			return true;
 		}
 		if(l.getBlock().getType()==Material.BEDROCK){
@@ -273,7 +272,6 @@ public class WorldEditHookModule extends PSCmdExe {
 				}
 			}
 		}
-		System.out.println(1);
 		return true;
 	}
 	@EventHandler
