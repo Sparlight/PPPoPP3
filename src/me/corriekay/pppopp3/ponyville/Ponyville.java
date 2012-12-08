@@ -7,13 +7,17 @@ import java.util.HashMap;
 import me.corriekay.pppopp3.Mane;
 import me.corriekay.pppopp3.events.JoinEvent;
 import me.corriekay.pppopp3.events.QuitEvent;
+import me.corriekay.pppopp3.modules.Equestria;
 import me.corriekay.pppopp3.utils.PSCmdExe;
+import me.corriekay.pppopp3.utils.Utils;
 
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.PlayerInventory;
 
 public final class Ponyville extends PSCmdExe{
 
@@ -74,7 +78,19 @@ public final class Ponyville extends PSCmdExe{
 	}
 	@EventHandler
 	public void onJoin(PlayerJoinEvent event){
-		JoinEvent je = new JoinEvent(event.getPlayer(),addPony(event.getPlayer()),true);
+		Player pl = event.getPlayer();
+		Pony p = addPony(pl);
+		JoinEvent je = new JoinEvent(pl,p,true);
+		{
+			//load info on player join
+			PlayerInventory i = pl.getInventory();
+			PlayerInventory i2 = p.getInventory(Equestria.get().getParentWorld(pl.getWorld()).getName());
+			i.setContents(i2.getContents());
+			i.setArmorContents(i2.getArmorContents());
+			p.setLastLogon(Utils.getSystemTime(System.currentTimeMillis()));
+			
+		}
+		p.save();
 		Bukkit.getPluginManager().callEvent(je);
 		event.setJoinMessage(je.getMsg());
 	}
@@ -83,7 +99,18 @@ public final class Ponyville extends PSCmdExe{
 		QuitEvent qe = new QuitEvent(event.getPlayer(),getPony(event.getPlayer()),true);
 		Bukkit.getPluginManager().callEvent(qe);
 		event.setQuitMessage(qe.getMsg());
-		Pony p = getPony(event.getPlayer());
+		Player pl = event.getPlayer();
+		Pony p = getPony(pl);
+		{
+			//Saved info on quit.
+			p.setLastLogout(Utils.getSystemTime(System.currentTimeMillis()));
+			for(World w : Bukkit.getWorlds()){
+				if(p.getRemoteChest(w)!=null){
+					p.saveRemoteChest(w);
+				}
+			}
+			p.setInventory(pl.getInventory(), Equestria.get().getParentWorld(pl.getWorld()).getName());
+		}
 		p.save();
 		removePony(event.getPlayer());
 	}
