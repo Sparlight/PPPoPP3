@@ -35,7 +35,7 @@ public class PonyManager extends PSCmdExe {
 	private PermissionAttachment consolePerms= Bukkit.getConsoleSender().addAttachment(Mane.getInstance());
 	
 	public PonyManager(){
-		super("PonyManager",new String[]{"setgroup","list","groupaddperm","groupdelperm","useraddperm","userdelperm"});
+		super("PonyManager",new String[]{"setgroup","list","groupaddperm","groupdelperm","useraddperm","userdelperm", "testperm"});
 		ponyManager = this;
 		initialize();
 	}
@@ -306,6 +306,16 @@ public class PonyManager extends PSCmdExe {
 				calculatePerms(player,null);
 			}
 			return true;
+		}
+		if(cmdn.equals("testperm")){
+			Player p = getSingleOnlinePlayer(args[0],sender);
+			if(p!=null){
+				sendMessage(sender,"Does the player have permission "+args[1]+"? "+p.hasPermission(args[1]));
+				return true;
+			} else {
+				sendMessage(sender,cantFindPlayer);
+				return true;
+			}
 		}
 		return true;
 	}
