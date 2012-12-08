@@ -11,12 +11,14 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.scheduler.BukkitScheduler;
@@ -217,17 +219,16 @@ public class WorldEditHookModule extends PSCmdExe {
         s2Min = s2.getMinimumPoint();
         s2Max = s2.getMaximumPoint();
 
-        /* The following code checks for collisions along the XZ plane, ignoring Y */          
 
-        if((s1Min.getBlockX() <= s2Max.getBlockX()) && (s2Min.getBlockX() <= s1Max.getBlockX())) //are their X's colliding?
+        if((s1Min.getBlockX() <= s2Max.getBlockX()) && (s2Min.getBlockX() <= s1Max.getBlockX()))
         {
-                if((s1Min.getBlockZ() <= s2Max.getBlockZ()) && (s2Min.getBlockZ() <= s2Max.getBlockZ())) //are their Z's colliding?
+                if((s1Min.getBlockZ() <= s2Max.getBlockZ()) && (s2Min.getBlockZ() <= s1Max.getBlockZ()))
                 {
                         return true;
                 }
         }
         return false;
-}
+    }
 	private void makeBedrock(Selection sel, World w) throws Exception{
 		int maxX, minX, maxZ, minZ;
 		maxX = Math.max(sel.getMinimumPoint().getBlockX(), sel.getMaximumPoint().getBlockX());
@@ -253,6 +254,27 @@ public class WorldEditHookModule extends PSCmdExe {
 				}
 			}
 		}
+	}
+	private boolean canModify(Location l, Player p){
+		if(p.hasPermission("pppopp3.creativeadmin")){
+			System.out.println(2);
+			return true;
+		}
+		if(l.getBlock().getType()==Material.BEDROCK){
+			return false;
+		}
+		for(String p2 : playerAreas.keySet()){
+			Selection s = playerAreas.get(p2);
+			if(s.contains(l)){
+				if(p2.equals(p.getName())){
+					continue;
+				} else {
+					return false;
+				}
+			}
+		}
+		System.out.println(1);
+		return true;
 	}
 	@EventHandler
 	public void onCommand(PlayerCommandPreprocessEvent event){
@@ -312,6 +334,52 @@ public class WorldEditHookModule extends PSCmdExe {
 		}
 	}
 	@EventHandler
+    public void onFromTo(BlockFromToEvent event)
+    {
+		if(!event.getBlock().getWorld().getName().equals("equestria")){
+			return;
+		}
+        int id = event.getBlock().getTypeId();
+        if(id >= 8 && id <= 11)
+        {
+            Block b = event.getToBlock();
+            int toid = b.getTypeId();
+            if(toid == 0)
+            {
+                if(generatesCobble(id, b))
+                {
+                    event.setCancelled(true);
+                }
+            }
+        }
+    }
+ 
+    private final BlockFace[] faces = new BlockFace[]
+        {
+            BlockFace.SELF,
+            BlockFace.UP,
+            BlockFace.DOWN,
+            BlockFace.NORTH,
+            BlockFace.EAST,
+            BlockFace.SOUTH,
+            BlockFace.WEST
+        };
+ 
+    public boolean generatesCobble(int id, Block b)
+    {
+        int mirrorID1 = (id == 8 || id == 9 ? 10 : 8);
+        int mirrorID2 = (id == 8 || id == 9 ? 11 : 9);
+        for(BlockFace face : faces)
+        {
+            Block r = b.getRelative(face, 1);
+            if(r.getTypeId() == mirrorID1 || r.getTypeId() == mirrorID2)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+	@EventHandler
 	public void breakBlock(BlockBreakEvent event){
 		if(!event.getBlock().getWorld().getName().equals("equestria")){
 			return;
@@ -326,26 +394,5 @@ public class WorldEditHookModule extends PSCmdExe {
 		}
 		Player p = event.getPlayer();
 		event.setCancelled(!canModify(event.getBlock().getLocation(),p));
-	}
-	private boolean canModify(Location l, Player p){
-		if(p.hasPermission("pppopp3.creativeadmin")){
-			System.out.println(2);
-			return true;
-		}
-		if(l.getBlock().getType()==Material.BEDROCK){
-			return false;
-		}
-		for(String p2 : playerAreas.keySet()){
-			Selection s = playerAreas.get(p2);
-			if(s.contains(l)){
-				if(p2.equals(p.getName())){
-					continue;
-				} else {
-					return false;
-				}
-			}
-		}
-		System.out.println(1);
-		return true;
 	}
 }
