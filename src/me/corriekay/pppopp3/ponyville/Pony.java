@@ -91,7 +91,7 @@ public class Pony {
 		return nicks;
 	}
 	public String getChatChannel(){
-		return c.getString("chatChannel");
+		return c.getString("chatchannel");
 	}
 	public HashSet<String> getListeningChannels(){
 		HashSet<String> chans = new HashSet<String>();
@@ -540,7 +540,7 @@ public class Pony {
 		c.set("invisible",new NBTTagByte("invisible",(byte)0));
 		c.set("nickname", new NBTTagString("nickname",pone.getName()));
 		c.set("nickHistory", new NBTTagList());
-		c.set("chatChannel", new NBTTagString("chatChannel","equestria"));
+		c.set("chatchannel", new NBTTagString("chatchannel","equestria"));
 		NBTTagList lc = new NBTTagList();
 		lc.add(new NBTTagString("channel","equestria"));
 		c.set("listenChannels",lc);
