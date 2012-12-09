@@ -54,9 +54,10 @@ public class ChatHandler extends PSCmdExe {
 			String icon = config.getString(channelName+".icon");
 			String permission = config.getString(channelName+".permission");
 			String quick = config.getString(channelName+".quick");
-			Channel channel = new Channel(channelName, icon, permission, color, quick,null);
+			Channel channel = new Channel(channelName, icon, permission, color, quick);
 			channels.put(channelName,channel);
 		}
+		channels.put("world", new WorldChannel("world","[WORLD]","pppopp3.chat.world",ChatColor.DARK_AQUA,"world"));
 		for(Player player : Bukkit.getOnlinePlayers()){
 			initiatePlayerChannels(player);
 			pmTargets.put(player.getName(), null);
@@ -164,6 +165,13 @@ public class ChatHandler extends PSCmdExe {
 				channel.broadcastToChannel("Server","Server",message,true);
 				return true;
 			}
+			Player player = (Player)sender;
+			String chans = "";
+			for(String s : channels.keySet()){
+				chans += " "+channels.get(s).color()+s;
+			}
+			sendMessage(player,"heres a list of the channels!:"+chans);
+			return true;
 		}
 		Player player;
 		if(sender instanceof Player){
@@ -407,6 +415,7 @@ public class ChatHandler extends PSCmdExe {
 			pony.setChatChannel("null");
 		} else {
 			pony.setChatChannel(chan.getName());
+			System.out.println("setting chat channel to "+chan.getName());
 		}
 		HashSet<String> channels = new HashSet<String>();
 		for(Channel chann : getListeningChannels(player)){

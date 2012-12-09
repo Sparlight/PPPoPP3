@@ -17,24 +17,22 @@ import org.bukkit.entity.Player;
 
 public class Channel {
 
-	private final String name;
-	private final String icon;
-	private final String perm;
-	private final String quick;
-	private String password;
-	private final ChatColor cc;
-	private final ChatColor w = ChatColor.WHITE;
+	protected final String name;
+	protected final String icon;
+	protected final String perm;
+	protected final String quick;
+	protected final ChatColor cc;
+	protected final ChatColor w = ChatColor.WHITE;
 	
-	private final HashSet<String> listeners = new HashSet<String>();
-	private final HashSet<String> chatters = new HashSet<String>();
+	protected final HashSet<String> listeners = new HashSet<String>();
+	protected final HashSet<String> chatters = new HashSet<String>();
 
-	public Channel(String channelName, String icon, String permission, ChatColor channelColor, String quick, String password){
+	public Channel(String channelName, String icon, String permission, ChatColor channelColor, String quick){
 		name = channelName;
 		this.icon = icon;
 		perm = permission;
 		cc = channelColor;
 		this.quick = quick;
-		this.password = password;
 	}
 	public String broadcastToChannel(String who, String whoplayer, String message, boolean log){
 		message = parseForLinks(message);
@@ -135,7 +133,8 @@ public class Channel {
 	}
 	protected ChatColor color(){
 		return cc;
-	}private String parseForLinks(String msg){
+	}
+	protected String parseForLinks(String msg){
 		String msg2 = "";
 		String[] msgArray = msg.split(" ");
 		for(String s : msgArray){
@@ -152,8 +151,5 @@ public class Channel {
 			msg2 += s+" ";
 		}
 		return msg2;
-	}
-	public String getPassword() {
-		return password;
 	}
 }
