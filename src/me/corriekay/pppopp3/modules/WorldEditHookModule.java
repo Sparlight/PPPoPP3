@@ -29,14 +29,11 @@ import com.sk89q.worldedit.bukkit.selections.CuboidSelection;
 import com.sk89q.worldedit.bukkit.selections.Selection;
 import com.sk89q.worldedit.regions.Region;
 
-import de.diddiz.LogBlockQuestioner.LogBlockQuestioner;
-
 public class WorldEditHookModule extends PSCmdExe {
 
 	private final ArrayList<String> commands = new ArrayList<String>();
 	private final HashMap<String, Selection> playerAreas = new HashMap<String, Selection>();
 	private final FileConfiguration config;
-	private final LogBlockQuestioner questioner = (LogBlockQuestioner)Bukkit.getPluginManager().getPlugin("LogBlockQuestioner");
 	private final WorldEditPlugin wep = ((WorldEditPlugin)Bukkit.getPluginManager().getPlugin("WorldEdit"));
 	public WorldEditHookModule(){
 		super("WorldEditHookModule", "claimplot", "releaseplot");

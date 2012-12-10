@@ -30,6 +30,8 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.EventExecutor;
 
+import de.diddiz.LogBlockQuestioner.LogBlockQuestioner;
+
 public abstract class PSCmdExe implements EventExecutor, CommandExecutor, Listener {
 
 	public final String name;
@@ -39,10 +41,12 @@ public abstract class PSCmdExe implements EventExecutor, CommandExecutor, Listen
 	protected final String notPlayer = pinkieSays+"Silly console, You need to be a player to do that!";
 	protected final String notEnoughArgs = pinkieSays+"Uh oh, youre gonna need to provide more arguments for that command than that!";
 	protected final String cantFindPlayer = pinkieSays+"I looked high and low, but I couldnt find that pony! :C";
+	protected final LogBlockQuestioner questioner;
 	
 	@SuppressWarnings("unchecked")
 	public PSCmdExe(String name, String...cmds){
 		this.name = name;
+		questioner = (LogBlockQuestioner)Bukkit.getPluginManager().getPlugin("LogBlockQuestioner");
 		for(Method method : this.getClass().getMethods()){
 			method.setAccessible(true);
 			Annotation eh = method.getAnnotation(EventHandler.class);
@@ -332,6 +336,14 @@ public abstract class PSCmdExe implements EventExecutor, CommandExecutor, Listen
 			}
 		}
 		return YamlConfiguration.loadConfiguration(file);
+	}
+	
+	public String getStringFromIndex(int index, String[] args){
+		String s = "";
+		for(int i = index;i<args.length;i++){
+			s += args[i]+" ";
+		}
+		return s.trim();
 	}
 
 	public void deactivate(){
