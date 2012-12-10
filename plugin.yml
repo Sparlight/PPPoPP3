@@ -102,10 +102,22 @@ commands:
     description: lists the silenced players for a user
     usage: /silenced
     permission: pppopp3.silence
+  ponyspy:
+    description: enables ponyspy
+    usage: /ponyspy
+    permission: pppopp3.ponyspy
+    aliases: [ps]
+  toggle:
+    description: toggles protections
+    usage: /toggle <water|lava|pvp>
+    permission: pppopp3.toggleprot
 permissions:
   pppopp3.pm.alertgroupchange:
     description: sends messages to players alerting to group changes
     default: false
   pppopp3.creativeadmin:
     description: allows a person to bypass pppopp3 creative checks
-    default: op
+    default: false
+  pppopp3.flintnsteel:
+    description: allows user to use flint and steel
+    default: false
