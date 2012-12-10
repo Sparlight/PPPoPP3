@@ -4,9 +4,12 @@ import java.util.HashSet;
 
 import me.corriekay.pppopp3.chat.ChatHandler;
 import me.corriekay.pppopp3.chat.PonySpy;
+import me.corriekay.pppopp3.modules.AfkHandler;
 import me.corriekay.pppopp3.modules.AntiDiscordModule;
+import me.corriekay.pppopp3.modules.BanHammer;
 import me.corriekay.pppopp3.modules.EntityLogger;
 import me.corriekay.pppopp3.modules.Equestria;
+import me.corriekay.pppopp3.modules.InvisibilityHandler;
 import me.corriekay.pppopp3.modules.RemoteChest;
 import me.corriekay.pppopp3.modules.WorldEditHookModule;
 import me.corriekay.pppopp3.ponymanager.PonyManager;
@@ -29,6 +32,9 @@ public class Mane extends JavaPlugin{
 		try {modules.add(new Equestria());} catch (Exception e) {e.printStackTrace();}
 		modules.add(new Ponyville());
 		modules.add(new PonyManager());
+		modules.add(new BanHammer());
+		modules.add(new InvisibilityHandler());
+		modules.add(new AfkHandler());
 		modules.add(new RemoteChest());
 		try {modules.add(new EntityLogger());} catch (Exception e){e.printStackTrace();}
 		modules.add(new WorldEditHookModule());

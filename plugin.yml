@@ -111,6 +111,45 @@ commands:
     description: toggles protections
     usage: /toggle <water|lava|pvp>
     permission: pppopp3.toggleprot
+  afk:
+    description: toggles manual afk systems
+    usage: /afk
+    permission: pppopp3.afk
+  hide:
+    description: vanishes from the server
+    usage: /hide
+    permission: pppopp3.hide
+    aliases: [fakehide]
+  nopickup:
+    description: toggles nopickup
+    usage: /nopickup
+    permission: pppopp3.nopickup
+    aliases: [np]
+  ban:
+    description: bans a user
+    usage: /ban <player> <reason>
+    aliases: [banana]
+    permission: pppopp3.ban
+  kick:
+    description: kicks a player
+    usage: /kick <player> <reason>
+    permission: pppopp3.kick
+  tempban:
+    description: temporarily ban a user
+    usage: /tempban <user> <time in hours> <reason>
+    permission: pppopp3.ban
+  unban:
+    description: Unbans a player
+    usage: /unban <player>
+    permission: pppopp3.ban
+  notes:
+    description: reads notes about a player
+    usage: /notes <player> (read)
+    permission: pppopp3.notes
+  createnote:
+    description: writes a note about a player
+    usage: /createnote <player> <note>
+    permission: pppopp3.notes
 permissions:
   pppopp3.pm.alertgroupchange:
     description: sends messages to players alerting to group changes
@@ -120,4 +159,13 @@ permissions:
     default: false
   pppopp3.flintnsteel:
     description: allows user to use flint and steel
+    default: false
+  pppopp3.invisible.seeinvis:
+    description: allows a user to see invisible players logging in
+    default: false
+  pppopp3.seehidden:
+    description: allows the user to see hidden players
+    default: false
+  pppopp3.alertnote:
+    description: broadcasts whenever a players notes have been added to
     default: false
