@@ -25,6 +25,7 @@ import net.minecraft.server.NBTTagString;
 import net.minecraft.server.PlayerInventory;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
@@ -260,9 +261,6 @@ public class Pony {
 	public int getBanType(){
 		return getBans().getInt("bantype");
 	}
-	public String getBanReason(){
-		return getBans().getString("banreason");
-	}
 	public long getUnbanTime(){
 		return getBans().getLong("unbantime");
 	}
@@ -479,16 +477,22 @@ public class Pony {
 	public void setBanType(int bantype){
 		getBans().set("bantype",new NBTTagInt("bantype",bantype));
 	}
-	public void setBanReason(String reason){
-		getBans().set("banreason", new NBTTagString("banreason",reason));
-	}
 	public void setUnbanTime(long arg){
 		getBans().set("unbantime", new NBTTagLong("unbantime",arg));
 	}
-	public void setNotes(ArrayList<String> set){
+	private void setNotes(ArrayList<String> set){
 		c.set("notes", getList(set));
 	}
-	
+	public void addNote(String whatHappened, String who, String note){
+		ArrayList<String> notes = getNotes();
+		String noteToAdd = who+" "+whatHappened+" at "+Utils.getFileDate(System.currentTimeMillis());
+		if(note!=null){
+			noteToAdd+=" - "+note;
+		}
+		Bukkit.broadcast(ChatColor.LIGHT_PURPLE+"Pinkie Pie: New note added for player "+getName()+"! \n"+noteToAdd, "pppopp3.alertnote");
+		notes.add(noteToAdd);
+		setNotes(notes);
+	}	
 	/*Utility methods*/
 	
 	private byte getBoolByte(boolean arg){
@@ -603,7 +607,6 @@ public class Pony {
 		NBTTagCompound ban = new NBTTagCompound();
 		ban.set("banned", new NBTTagByte("banned",(byte)0));
 		ban.set("bantype", new NBTTagByte("bantype",(byte)0));
-		ban.set("banreason", new NBTTagString("banreason","n/a"));
 		ban.set("unbantime", new NBTTagLong("unbantime",0));
 		c.set("ban", ban);
 		c.set("notes", new NBTTagList());
