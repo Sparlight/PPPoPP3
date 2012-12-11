@@ -94,7 +94,6 @@ public class ChatHandler extends PSCmdExe {
 		m.addAll(muted);
 		silenced.put(name, m);
 	}
-	@Override
 	public boolean handleCommand(CommandSender sender, Command cmd, String label, String[] args){
 
 		if(cmd.getName().equals("mute")){
