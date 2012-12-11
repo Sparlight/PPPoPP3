@@ -150,6 +150,78 @@ commands:
     description: writes a note about a player
     usage: /createnote <player> <note>
     permission: pppopp3.notes
+  pw:
+    description: teleports to a private warp
+    usage: /pw <warp>
+    permission: pppopp3.pw
+  pwlist:
+    description: lists all warps
+    usage: /pwlist
+    permission: pppopp3.pwlist
+  pwdel:
+    description: deletes a private warp
+    usage: /pwdel <warp>
+    permission: pppopp3.pw
+  pwset:
+    description: sets a private warp
+    usage: /pwset <warp>
+    permission: pppopp3.pw
+  gw:
+    description: teleports to a global warp
+    usage: /gw <warp>
+    permission: pppopp3.gw
+  gwset:
+    description: sets a global warp
+    usage: /gwset <warp>
+    permission: pppopp3.gwset
+  gwdel:
+    description: deletes a global warp
+    usage: /gwdel <warp>
+    permission: pppopp3.gwset
+  pwplayer:
+    description: mod base command for dealing with other player warps
+    usage: /pwplayer <player> <params>
+    permission: pppopp3.pwplayer
+  tp:
+    description: requests teleport to a player
+    usage: /tp <player>
+    permission: pppopp3.tp
+  tpa:
+    description: accepts a teleport request
+    usage: /tpa
+    permission: pppopp3.tp
+  tpd:
+    description: denies a teleport request
+    usage: /tpd
+    permission: pppopp3.tp
+  tphere:
+    description: admin command, teleports a user to you
+    usage: /tphere <player>
+    permission: pppopp3.tphere
+  home:
+    description: teleports home
+    usage: /home
+    permission: pppopp3.home
+  sethome:
+    description: sets your home
+    usage: /sethome
+    permission: pppopp3.home
+  back:
+    description: teleports back
+    usage: /back
+    permission: pppopp3.back
+  spawn:
+    description: teleports to the spawn
+    usage: /spawn
+    permission: pppopp3.spawn
+  setspawn:
+    description: sets the spawn
+    usage: /setspawn
+    permission: pppopp3.setspawn
+  top:
+    description: teleports a player to the top block in their collumn
+    usage: /top
+    permission: pppopp3.top
 permissions:
   pppopp3.pm.alertgroupchange:
     description: sends messages to players alerting to group changes
