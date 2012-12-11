@@ -70,7 +70,7 @@ public class BanHammer extends PSCmdExe {
 			String name;
 			String message = "";
 			if(sender instanceof ConsoleCommandSender){
-				name = "Console";
+				name = "CONSOLE";
 			} else {
 				name = ((Player)sender).getName();
 			}
