@@ -249,6 +249,21 @@ public class Pony {
 	public Location getNamedWarp(String warp){
 		return getWarp(getWarps().getCompound(warp));
 	}
+	@SuppressWarnings("unchecked")
+	public HashMap<String,Location> getAllNamedWarps(){
+		HashMap<String,Location> locs = new HashMap<String,Location>();
+		
+		getWarps();
+		for(NBTTagCompound s : (Collection<NBTTagCompound>)getWarps().c()){
+			String name = s.getName();
+			if(name.equals("other")){
+				continue;
+			}
+			locs.put(name,getWarp(s));
+		}
+		
+		return locs;
+	}
 	public boolean isBanned(){
 		return getBans().getByte("banned") == 1;
 	}
@@ -600,7 +615,7 @@ public class Pony {
 		other.set("back", back);
 		other.set("home",home);
 		other.set("offline",offline);
-		home.set("other", other);
+		warps.set("other", other);
 		c.set("warps", warps);
 		
 		//ban
