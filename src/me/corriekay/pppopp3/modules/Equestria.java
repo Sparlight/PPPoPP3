@@ -1,6 +1,7 @@
 package me.corriekay.pppopp3.modules;
 
 import java.util.HashMap;
+import java.util.HashSet;
 
 import me.corriekay.pppopp3.ponyville.Pony;
 import me.corriekay.pppopp3.ponyville.Ponyville;
@@ -32,6 +33,7 @@ public class Equestria extends PSCmdExe {
 
 	//world1: subworld. world2: parent world
 	private HashMap<World,World> worlds = new HashMap<World,World>();
+	private final HashSet<World> parentWorlds = new HashSet<World>();
 	private HashMap<World,GameMode> gamemodes = new HashMap<World,GameMode>();
 	private static Equestria e;
 	
@@ -58,6 +60,7 @@ public class Equestria extends PSCmdExe {
 			}
 			World w = loadWorld(world,e,wt);
 			worlds.put(w,w);
+			parentWorlds.add(w);
 			gamemodes.put(w,gm);
 			if(worldconfig.getBoolean("worldconfig."+world+".end")){
 				World end = loadWorld(world+"_the_end",Environment.THE_END,WorldType.LARGE_BIOMES);
@@ -92,6 +95,10 @@ public class Equestria extends PSCmdExe {
 	}
 	public World getParentWorld(World world){
 		return worlds.get(world);
+	}
+	@SuppressWarnings("unchecked")
+	public HashSet<World> getParentWorlds(){
+		return (HashSet<World>) parentWorlds.clone();
 	}
 	public boolean isSubWorld(World child, World parent){
 		return worlds.get(child).equals(parent);
