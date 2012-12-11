@@ -71,8 +71,12 @@ public abstract class PSCmdExe implements EventExecutor, CommandExecutor, Listen
 	}
 	private void registerCommands(String[] cmds){
 		for(String cmd : cmds){
-			Mane.getInstance().getCommand(cmd).setExecutor(this);
-			Mane.getInstance().getCommand(cmd).setPermissionMessage(pinkieSays+"Oh no! You cant do this :c");
+			try {
+				Mane.getInstance().getCommand(cmd).setExecutor(this);
+				Mane.getInstance().getCommand(cmd).setPermissionMessage(pinkieSays+"Oh no! You cant do this :c");
+			} catch (Exception e) {
+				Mane.getInstance().getLogger().severe("Attempted command register failed: \""+cmd+"\" is not registered.");
+			}
 		}
 	}
 	@Override
