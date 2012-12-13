@@ -102,6 +102,11 @@ commands:
     description: lists the silenced players for a user
     usage: /silenced
     permission: pppopp3.silence
+  channelcolor:
+    description: sets a channel to a custom color
+    usage: /channelcolor <color> [channel]
+    permission: pppopp3.channel
+    aliases: [cc]
   ponyspy:
     description: enables ponyspy
     usage: /ponyspy
@@ -240,4 +245,7 @@ permissions:
     default: false
   pppopp3.alertnote:
     description: broadcasts whenever a players notes have been added to
+    default: false
+  pppopp3.tpbypass:
+    description: bypasses teleport cooldown
     default: false
