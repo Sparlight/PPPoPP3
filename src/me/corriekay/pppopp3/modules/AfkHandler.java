@@ -129,5 +129,4 @@ public class AfkHandler extends PSCmdExe {
 			return true;
 		}
 	}
-
 }
