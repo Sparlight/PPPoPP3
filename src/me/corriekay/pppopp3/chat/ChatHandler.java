@@ -44,7 +44,7 @@ public class ChatHandler extends PSCmdExe {
 	protected static HashMap<String, HashSet<String>> silenced = new HashMap<String,HashSet<String>>();
 
 	public ChatHandler() throws Exception {
-		super("ChatHandler","join","leave","channel","say","me","mute","pm","r","silence","silenced");
+		super("ChatHandler","join","leave","channel","say","me","mute","pm","r","silence","silenced","channelcolor");
 		methodMap.put(ChannelMessageEvent.class, this.getClass().getDeclaredMethod("messageRecieveEvent",PlayerRecieveMessageEvent.class));
 		ch = this;
 		FileConfiguration config = getNamedConfig("channels.yml");
@@ -95,7 +95,6 @@ public class ChatHandler extends PSCmdExe {
 		silenced.put(name, m);
 	}
 	public boolean handleCommand(CommandSender sender, Command cmd, String label, String[] args){
-
 		if(cmd.getName().equals("mute")){
 			if(args.length<1){
 				sendMessage(sender,notEnoughArgs);
@@ -362,6 +361,41 @@ public class ChatHandler extends PSCmdExe {
 				pmTargets.put(player.getName(),target.getName());
 				pmTargets.put(target.getName(),player.getName());
 			}
+			return true;
+		}
+		if(cmd.getName().equals("channelcolor")){
+			if(args.length<1){
+				sendMessage(player,"This command changes a chat channels color to a different color! If you dont specify a channel, it will default to the channel you are currently chatting in. If you type \"default\" for the color, it will set the color to the channels default color!");
+				return true;
+			}
+			Channel chan;
+			ChatColor color;
+			if(args.length>1){
+				chan = getChannel(args[1]);
+			} else {
+				chan = getChattingChannel(player);
+			}
+			if(chan == null){
+				sendMessage(player,"Either that channel cannot be found, or you aren't even talking in a channel! Please specify a correct channel!");
+				return true;
+			}
+			if(!checkCanJoin(chan,player)){
+				sendMessage(player,"Uh oh, you cant modify that channel!");
+				return true;
+			}
+			if(args[0].equals("default")){
+				color = chan.cc;
+			} else {
+				color = ChatColor.valueOf(args[0].toUpperCase());
+			}
+			if(color == null){
+				sendMessage(player,"Color not found!");
+				return true;
+			}
+			Pony pony = Ponyville.getPony(player);
+			pony.setChannelColor(chan.name, color);
+			pony.save();
+			sendMessage(player,"Yay! you just set "+chan.name+"'s color to "+color+color.name()+"!");
 			return true;
 		}
 		return true;
