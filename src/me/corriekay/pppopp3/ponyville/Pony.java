@@ -94,6 +94,14 @@ public class Pony {
 	public String getChatChannel(){
 		return c.getString("chatchannel");
 	}
+	public ChatColor getChannelColor(String channel){
+		try {
+			ChatColor color = ChatColor.valueOf(c.getCompound("channelcolors").getString(channel));
+			return color;
+		} catch (Exception e) {
+			return null;
+		}
+	}
 	public HashSet<String> getListeningChannels(){
 		HashSet<String> chans = new HashSet<String>();
 		NBTTagList list = c.getList("listenchannels");
@@ -369,6 +377,9 @@ public class Pony {
 	public void setChatChannel(String arg){
 		c.set("chatchannel",new NBTTagString("chatchannel",arg));
 	}
+	public void setChannelColor(String channel, ChatColor color){
+		c.getCompound("channelcolors").setString(channel, color.name());
+	}
 	public void setListenChannels(HashSet<String> set){
 		c.set("listenchannels",getList(set));
 	}
@@ -480,6 +491,14 @@ public class Pony {
 	public void setNamedWarp(String warpname, Location loc){
 		getWarps().set(warpname, getLocationCompound(loc));
 	}
+	public boolean removeNamedWarp(String warpname){
+		if(getWarps().hasKey(warpname)){
+			getWarps().remove(warpname);
+			return true;
+		} else {
+			return false;
+		}
+	}
 	public void setBanned(boolean flag){
 		getBans().set("banned", new NBTTagByte("banned",getBoolByte(flag)));
 	}
@@ -560,6 +579,7 @@ public class Pony {
 		c.set("nickname", new NBTTagString("nickname",pone.getName()));
 		c.set("nickHistory", new NBTTagList());
 		c.set("chatchannel", new NBTTagString("chatchannel","equestria"));
+		c.set("channelcolors", new NBTTagCompound());
 		NBTTagList lc = new NBTTagList();
 		lc.add(new NBTTagString("channel","equestria"));
 		c.set("listenChannels",lc);

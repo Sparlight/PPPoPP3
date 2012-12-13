@@ -8,6 +8,8 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.HashSet;
 
+import me.corriekay.pppopp3.ponyville.Pony;
+import me.corriekay.pppopp3.ponyville.Ponyville;
 import me.corriekay.pppopp3.utils.PonyLogger;
 import me.corriekay.pppopp3.utils.Utils;
 
@@ -49,8 +51,16 @@ public class Channel {
 				continue;
 			}
 			Player player = Bukkit.getPlayerExact(name);
+			Pony pony = Ponyville.getPony(player);
+			ChatColor cc2 = pony.getChannelColor(this.name);
+			String msg2sendfinal;
+			if(cc2!=null){
+				msg2sendfinal = cc2+icon+" "+w+who+w+": "+cc2+message;
+			} else {
+				msg2sendfinal = message2send;
+			}
 			if(player!=null){
-				player.sendMessage(message2send);
+				player.sendMessage(msg2sendfinal);
 			}
 		}
 		Bukkit.getConsoleSender().sendMessage(message2send);
