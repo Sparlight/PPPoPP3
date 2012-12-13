@@ -58,7 +58,7 @@ public class WorldEditHookModule extends PSCmdExe {
 			World w = Bukkit.getWorld("equestria");
 			l = new Location(w,x,1,z);
 			Location max,min;
-			max = new Location(l.getWorld(),l.getX()-50,1,l.getZ()-50);
+			max = new Location(l.getWorld(),l.getX()-50,2,l.getZ()-50);
 			min = new Location(l.getWorld(),l.getX()+50,l.getWorld().getMaxHeight(),l.getZ()+50);
 			Selection s = new CuboidSelection(w, min, max);
 			playerAreas.put(player, s);
@@ -256,7 +256,7 @@ public class WorldEditHookModule extends PSCmdExe {
 		if(p.hasPermission("pppopp3.creativeadmin")){
 			return true;
 		}
-		if(l.getBlock().getType()==Material.BEDROCK){
+		if(l.getBlock().getY()<2){
 			return false;
 		}
 		for(String p2 : playerAreas.keySet()){
