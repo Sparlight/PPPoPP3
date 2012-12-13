@@ -3,6 +3,8 @@ package me.corriekay.pppopp3.chat;
 import java.io.File;
 
 import me.corriekay.pppopp3.modules.Equestria;
+import me.corriekay.pppopp3.ponyville.Pony;
+import me.corriekay.pppopp3.ponyville.Ponyville;
 import me.corriekay.pppopp3.utils.PonyLogger;
 import me.corriekay.pppopp3.utils.Utils;
 
@@ -34,10 +36,18 @@ public class WorldChannel extends Channel{
 				continue;
 			}
 			Player player = Bukkit.getPlayerExact(name);
+			Pony pony = Ponyville.getPony(player);
+			ChatColor cc2 = pony.getChannelColor(this.name);
+			String msg2sendfinal;
+			if(cc2!=null){
+				msg2sendfinal = cc2+icon+" "+w+who+w+": "+cc2+message;
+			} else {
+				msg2sendfinal = message2send;
+			}
 			if(player!=null){
 				World recieverworld = Equestria.get().getParentWorld(player.getWorld());
 				if(recieverworld.getName().equals(senderWorld.getName())||player.hasPermission("pppopp3.chat.staff")){
-					player.sendMessage(message2send);
+					player.sendMessage(msg2sendfinal);
 				}
 			}
 		}
