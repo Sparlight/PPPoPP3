@@ -25,7 +25,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.player.PlayerPortalEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.PlayerInventory;
 
@@ -154,11 +153,6 @@ public class Equestria extends PSCmdExe {
 			p.save();
 			player.setGameMode(gamemodes.get(toParent));
 		}
-	}
-	@EventHandler
-	public void playerRespawn(PlayerRespawnEvent event){
-		World w = getParentWorld(event.getPlayer().getLocation().getWorld());
-		event.setRespawnLocation(w.getSpawnLocation());
 	}
 	@EventHandler
 	public void spawn(CreatureSpawnEvent event){
