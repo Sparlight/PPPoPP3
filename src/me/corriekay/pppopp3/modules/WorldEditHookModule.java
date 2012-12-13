@@ -161,10 +161,7 @@ public class WorldEditHookModule extends PSCmdExe {
 	}
 	private void removeBedrock(Region r,World w){
 		for(BlockVector bv : r){
-			Block b = w.getBlockAt(bv.getBlockX(),bv.getBlockY(),bv.getBlockZ());
-			if(b.getY()!=1){
-				continue;
-			}
+			Block b = w.getBlockAt(bv.getBlockX(),1,bv.getBlockZ());
 			if(b.getType() == Material.BEDROCK){
 				b.setType(Material.GRASS);
 			}
