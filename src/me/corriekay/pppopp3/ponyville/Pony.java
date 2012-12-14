@@ -317,6 +317,9 @@ public class Pony {
 			String w;
 			long x,y,z;
 			float p,yaw;
+			if(!(compound.hasKey("world")||compound.hasKey("x")||compound.hasKey("y")||compound.hasKey("z")||compound.hasKey("pitch")||compound.hasKey("yaw"))){
+				return null;
+			}
 			w = compound.getString("world");
 			x = compound.getLong("x");
 			y = compound.getLong("y");

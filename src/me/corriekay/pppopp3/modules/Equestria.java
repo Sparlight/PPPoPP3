@@ -11,10 +11,12 @@ import me.corriekay.pppopp3.utils.PSCmdExe;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
+import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -23,7 +25,8 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.PlayerInventory;
@@ -113,6 +116,10 @@ public class Equestria extends PSCmdExe {
 		}
 		return null;
 	}
+	public static boolean isEquestria(World world){
+		World w = get().getParentWorld(world);
+		return w.getName().equals("equestria");
+	}
 	@EventHandler
 	public void onPortalEnter(PlayerPortalEvent event){
 		World w = event.getPlayer().getWorld();
@@ -155,9 +162,16 @@ public class Equestria extends PSCmdExe {
 		}
 	}
 	@EventHandler
-	public void spawn(CreatureSpawnEvent event){
-		if(event.getLocation().getWorld().getName().equals("equestria")){
-			event.setCancelled(true);
+	public void openEnderChest(PlayerInteractEvent event){
+		Block b = event.getClickedBlock();
+		World w = event.getPlayer().getWorld();
+		if(!getParentWorld(w).getName().equals("world")){
+			if(b != null && b.getType() == Material.ENDER_CHEST){
+				if(event.getAction() == Action.LEFT_CLICK_BLOCK){
+					return;
+				}
+				event.setCancelled(true);
+			}
 		}
 	}
 	public boolean handleCommand(CommandSender sender, Command cmd, String label, String[] args){

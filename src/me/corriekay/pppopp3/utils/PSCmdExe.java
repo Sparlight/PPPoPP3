@@ -29,6 +29,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.EventExecutor;
+import org.bukkit.plugin.IllegalPluginAccessException;
 
 import de.diddiz.LogBlockQuestioner.LogBlockQuestioner;
 
@@ -67,6 +68,10 @@ public abstract class PSCmdExe implements EventExecutor, CommandExecutor, Listen
 			methodMap.put(event, method);
 		} catch (NullPointerException e) {
 			Bukkit.getLogger().severe("Illegal event registration!");
+		} catch (IllegalPluginAccessException e){
+			Bukkit.getLogger().severe("Illegal plugin access exception!");
+			Bukkit.getLogger().severe(e.getMessage());
+			Bukkit.getLogger().severe("Tried to register illegal event: "+event.getCanonicalName());
 		}
 	}
 	private void registerCommands(String[] cmds){

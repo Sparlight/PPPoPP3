@@ -24,6 +24,7 @@ public class AfkHandler extends PSCmdExe {
 	private final HashMap<String,Boolean> afkList = new HashMap<String,Boolean>();
 	private final int afkseconds = getNamedConfig("config.yml").getInt("afkSeconds", 120);
 	public final AfkHandler afk;
+	private final int taskId;
 
 	public AfkHandler() {
 		super("AfkHandler","afk");
@@ -33,7 +34,7 @@ public class AfkHandler extends PSCmdExe {
 				registerPlayer(player.getName());
 			}
 		}
-		Bukkit.getScheduler().scheduleSyncRepeatingTask(Mane.getInstance(), new Runnable(){
+		taskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(Mane.getInstance(), new Runnable(){
 			@Override
 			public void run(){
 				forLoop:
@@ -128,5 +129,8 @@ public class AfkHandler extends PSCmdExe {
 			setAfk(pName,false,false);
 			return true;
 		}
+	}
+	public void deactivate(){
+		Bukkit.getScheduler().cancelTask(taskId);
 	}
 }
