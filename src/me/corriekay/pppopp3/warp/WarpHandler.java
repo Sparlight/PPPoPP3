@@ -510,11 +510,22 @@ public class WarpHandler extends PSCmdExe {
 	public void onRespawn(PlayerRespawnEvent event){
 		Player player = event.getPlayer();
 		Location loc = homes.get(player.getName());
-		if(loc!=null&&Equestria.get().getParentWorld(loc.getWorld()).equals(Equestria.get().getParentWorld(player.getWorld()))){
-			event.setRespawnLocation(loc);
+		if(loc == null){
+			Location spawn = spawns.get(Equestria.get().getParentWorld(player.getLocation().getWorld()));
+			event.setRespawnLocation(spawn);
+			return;
 		} else {
-			event.setRespawnLocation(spawns.get(Equestria.get().getParentWorld(player.getWorld())));
+			World overworld, parentOverworld;
+			overworld = Equestria.get().getParentWorld(loc.getWorld());
+			parentOverworld = Equestria.get().getParentWorld(player.getLocation().getWorld());
+			if(overworld!=parentOverworld){
+				event.setRespawnLocation(spawns.get(parentOverworld));
+			} else {
+				event.setRespawnLocation(loc);
+			}
+			return;
 		}
+		
 	}
 	@EventHandler
 	public void onDeath(PlayerDeathEvent event){
