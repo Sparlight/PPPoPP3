@@ -1,5 +1,7 @@
 package me.corriekay.pppopp3.modules;
 
+import static me.corriekay.pppopp3.modules.Equestria.isEquestria;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -11,16 +13,24 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.event.player.PlayerBucketEmptyEvent;
+import org.bukkit.event.player.PlayerBucketEvent;
+import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import com.sk89q.worldedit.BlockVector;
@@ -326,54 +336,65 @@ public class WorldEditHookModule extends PSCmdExe {
 		}
 	}
 	@EventHandler
-    public void onFromTo(BlockFromToEvent event)
-    {
-		if(!event.getBlock().getWorld().getName().equals("equestria")){
+	public void spawn(CreatureSpawnEvent event){
+		if(isEquestria(event.getLocation().getWorld())){
+			event.setCancelled(true);
+		}
+	}
+	@EventHandler
+	public void projectil(ProjectileLaunchEvent event){
+		if(isEquestria(event.getEntity().getWorld())){
+			event.setCancelled(true);
+		}
+	}
+	@EventHandler
+	public void interact(PlayerInteractEvent event){
+		if(!isEquestria(event.getPlayer().getWorld())){
 			return;
 		}
-        int id = event.getBlock().getTypeId();
-        if(id >= 8 && id <= 11)
-        {
-            Block b = event.getToBlock();
-            int toid = b.getTypeId();
-            if(toid == 0)
-            {
-                if(generatesCobble(id, b))
-                {
-                    event.setCancelled(true);
-                }
-            }
-        }
-    }
- 
-    private final BlockFace[] faces = new BlockFace[]
-        {
-            BlockFace.SELF,
-            BlockFace.UP,
-            BlockFace.DOWN,
-            BlockFace.NORTH,
-            BlockFace.EAST,
-            BlockFace.SOUTH,
-            BlockFace.WEST
-        };
- 
-    public boolean generatesCobble(int id, Block b)
-    {
-        int mirrorID1 = (id == 8 || id == 9 ? 10 : 8);
-        int mirrorID2 = (id == 8 || id == 9 ? 11 : 9);
-        for(BlockFace face : faces)
-        {
-            Block r = b.getRelative(face, 1);
-            if(r.getTypeId() == mirrorID1 || r.getTypeId() == mirrorID2)
-            {
-                return true;
-            }
-        }
-        return false;
+		ItemStack is = event.getPlayer().getItemInHand();
+		if(event.getAction() == Action.RIGHT_CLICK_AIR||event.getAction() == Action.RIGHT_CLICK_BLOCK){
+			if(is.getType() == Material.POTION|| is.getType() == Material.EYE_OF_ENDER){
+				event.setCancelled(true);
+			}
+		}
+		
+	}
+	@EventHandler
+	public void drop(PlayerDropItemEvent event){
+		if(isEquestria(event.getPlayer().getWorld())){
+			event.setCancelled(true);
+		}
+	}
+	@EventHandler
+	public void bukkitEmpty(PlayerBucketEmptyEvent event){
+		bukkit(event);
+	}
+	@EventHandler
+	public void bukkitFill(PlayerBucketFillEvent event){
+		bukkit(event);
+	}
+	private void bukkit(PlayerBucketEvent event){
+		if(isEquestria(event.getBlockClicked().getWorld())){
+			Location loc = event.getBlockClicked().getRelative(event.getBlockFace()).getLocation();
+			for(String s : playerAreas.keySet()){
+				Selection sel = playerAreas.get(s);
+				if(sel.contains(loc)){
+					event.setCancelled(!event.getPlayer().getName().equals(s));
+					return;
+				}
+			}
+		}
+	}
+	@EventHandler
+    public void onFromTo(BlockFromToEvent event){
+		if(isEquestria(event.getBlock().getWorld())){
+			event.setCancelled(true);
+		}
     }
 	@EventHandler
 	public void breakBlock(BlockBreakEvent event){
-		if(!event.getBlock().getWorld().getName().equals("equestria")){
+		if(!isEquestria(event.getBlock().getWorld())){
 			return;
 		}
 		Player p = event.getPlayer();
