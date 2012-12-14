@@ -16,6 +16,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockDispenseEvent;
 import org.bukkit.event.block.BlockFromToEvent;
@@ -81,7 +82,7 @@ public class AntiDiscordModule extends PSCmdExe {
 			return;
 		}
 	}
-	@EventHandler
+	@EventHandler(priority = EventPriority.LOWEST)
 	public void liquidFlowEvent(BlockFromToEvent event){
 		if(event.getBlock().getType().equals(Material.STATIONARY_LAVA)){
 			event.setCancelled(lava);
