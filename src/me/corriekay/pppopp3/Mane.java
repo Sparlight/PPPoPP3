@@ -11,9 +11,12 @@ import me.corriekay.pppopp3.modules.EntityLogger;
 import me.corriekay.pppopp3.modules.Equestria;
 import me.corriekay.pppopp3.modules.InvisibilityHandler;
 import me.corriekay.pppopp3.modules.RemoteChest;
+import me.corriekay.pppopp3.modules.UnicornHorn;
 import me.corriekay.pppopp3.modules.WorldEditHookModule;
+import me.corriekay.pppopp3.modules.XrayLogger;
 import me.corriekay.pppopp3.ponymanager.PonyManager;
 import me.corriekay.pppopp3.ponyville.Ponyville;
+import me.corriekay.pppopp3.rpa.RemotePonyAdmin;
 import me.corriekay.pppopp3.utils.PSCmdExe;
 import me.corriekay.pppopp3.warp.WarpHandler;
 
@@ -43,6 +46,9 @@ public class Mane extends JavaPlugin{
 		modules.add(new PonySpy());
 		modules.add(new AntiDiscordModule());
 		try{modules.add(new WarpHandler());}catch(Exception e){e.printStackTrace();}
+		try{modules.add(new RemotePonyAdmin());}catch(Exception e){e.printStackTrace();}
+		modules.add(new UnicornHorn());
+		try{modules.add(new XrayLogger());}catch(Exception e){e.printStackTrace();}
 	}
 	public void onDisable(){
 		for(PSCmdExe exe : modules){

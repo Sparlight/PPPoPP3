@@ -8,8 +8,10 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.HashSet;
 
+import me.corriekay.packets.server.ChatPacket;
 import me.corriekay.pppopp3.ponyville.Pony;
 import me.corriekay.pppopp3.ponyville.Ponyville;
+import me.corriekay.pppopp3.rpa.RemotePonyAdmin;
 import me.corriekay.pppopp3.utils.PonyLogger;
 import me.corriekay.pppopp3.utils.Utils;
 
@@ -67,12 +69,10 @@ public class Channel {
 		if(log){
 			PonyLogger.logMessage("ChatLogs"+File.separator+Utils.getFileDate(System.currentTimeMillis()), this.name, "["+Utils.getTimeStamp(System.currentTimeMillis())+"] ["+ChatColor.stripColor(who)+"]: "+message);
 		}
-		/*TODO
 		ChatPacket cp = new ChatPacket();
 		cp.channel = name;
 		cp.message = ChatColor.stripColor(message2send);
 		RemotePonyAdmin.rpa.sendChatPacket(cp);
-		*/
 		return message2send;
 	}
 	public void broadcastRawMessage(String message, boolean log){
@@ -86,12 +86,10 @@ public class Channel {
 		if(log){
 			PonyLogger.logMessage("ChatLogs"+File.separator+Utils.getFileDate(System.currentTimeMillis()), name+".txt", "["+Utils.getTimeStamp(System.currentTimeMillis())+"]: "+message);
 		}
-		/*TODO
 		ChatPacket cp = new ChatPacket();
 		cp.channel = name;
 		cp.message = ChatColor.stripColor(message);
 		RemotePonyAdmin.rpa.sendChatPacket(cp);
-		*/
 		Bukkit.getConsoleSender().sendMessage(message);
 	}
 	protected String permission(){

@@ -7,6 +7,7 @@ import me.corriekay.pppopp3.events.JoinEvent;
 import me.corriekay.pppopp3.events.QuitEvent;
 import me.corriekay.pppopp3.ponyville.Pony;
 import me.corriekay.pppopp3.ponyville.Ponyville;
+import me.corriekay.pppopp3.rpa.RemotePonyAdmin;
 import me.corriekay.pppopp3.utils.PSCmdExe;
 
 import org.bukkit.Bukkit;
@@ -175,7 +176,7 @@ public class InvisibilityHandler extends PSCmdExe {
 				turnOn(player.getName(),true,true,DisguiseCraft.getAPI().isDisguised(event.getPlayer()));
 				event.setCancelled(true);
 				Bukkit.broadcast(ChatColor.DARK_GRAY+player.getDisplayName()+ChatColor.DARK_GRAY+" has logged in silently!","pppopp3.invisible.seeinvis");
-				//RemotePonyAdmin.rpa.messageCorrie(ChatColor.stripColor(player.getDisplayName()+ChatColor.DARK_GRAY+" has logged in silently!")); TODO
+				RemotePonyAdmin.rpa.messageCorrie(ChatColor.stripColor(player.getDisplayName()+ChatColor.DARK_GRAY+" has logged in silently!"));
 			} else {
 				turnOff(player.getName(),true,true,DisguiseCraft.getAPI().isDisguised(event.getPlayer()),false);
 			}

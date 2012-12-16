@@ -103,7 +103,6 @@ public class WorldEditHookModule extends PSCmdExe {
 											removeProtection(player.getName());
 											addProtection(player);
 										} catch (Exception e) {
-											// TODO Auto-generated catch block
 											e.printStackTrace();
 										}
 									}
@@ -117,7 +116,6 @@ public class WorldEditHookModule extends PSCmdExe {
 								try {
 									addProtection(player);
 								} catch (Exception e) {
-									// TODO Auto-generated catch block
 									e.printStackTrace();
 								}
 								return;
@@ -151,7 +149,6 @@ public class WorldEditHookModule extends PSCmdExe {
 										sendMessage(player,"Releaseing the plot!");
 										removeProtection(player.getName());
 									} catch (Exception e) {
-										// TODO Auto-generated catch block
 										e.printStackTrace();
 									}
 								}
