@@ -6,20 +6,25 @@ import me.corriekay.pppopp3.events.QuitEvent;
 import me.corriekay.pppopp3.utils.PSCmdExe;
 import me.corriekay.pppopp3.utils.Utils;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Creeper;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockDispenseEvent;
 import org.bukkit.event.block.BlockFromToEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
@@ -31,18 +36,41 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerEggThrowEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
+import com.sk89q.worldedit.bukkit.selections.CuboidSelection;
+import com.sk89q.worldedit.bukkit.selections.Selection;
+
 public class AntiDiscordModule extends PSCmdExe {
 	
 	private boolean lava = false;
 	private boolean water = false;
 	private int spawns = 10;
 	private HashSet<String> pvpBypass = new HashSet<String>();
+	private HashSet<Selection> protections = new HashSet<Selection>();
 	
 	public AntiDiscordModule(){
 		super("AntiDiscordModule", "toggle");
 		try {
 			methodMap.put(EntityDamageByEntityEvent.class, this.getClass().getDeclaredMethod("pvpHandler", EntityDamageEvent.class));
 		} catch (Exception e) {}
+		initProtections();
+	}
+	private void initProtections(){
+		FileConfiguration config = getNamedConfig("protections.yml");
+		for(String s : config.getKeys(false)){
+			Location min,max;
+			World w = Bukkit.getWorld(config.getString(s+".world"));
+			double x, xx, y, yy, z, zz;
+			x = config.getDouble(s+".minimum.x");
+			y = config.getDouble(s+".minimum.y");
+			z = config.getDouble(s+".minimum.z");
+			xx = config.getDouble(s+".maximum.x");
+			yy = config.getDouble(s+".maximum.y");
+			zz = config.getDouble(s+".maximum.z");
+			min = new Location(w,x,y,z);
+			max = new Location(w,xx,yy,zz);
+			CuboidSelection sel = new CuboidSelection(w,min,max);
+			protections.add(sel);
+		}
 	}
 	public boolean isntPvp(World w){
 		w = Equestria.get().getParentWorld(w);
@@ -51,19 +79,41 @@ public class AntiDiscordModule extends PSCmdExe {
 	@EventHandler
 	public void explosionNerf(EntityExplodeEvent event){
 		if(isntPvp(event.getEntity().getWorld())) event.blockList().clear();
+		else {
+			boolean clear = false;
+			for(Block b : event.blockList()){
+				if(isProtected(b.getLocation())){
+					clear = true;
+					break;
+				}
+			}
+			if(clear){
+				event.blockList().clear();
+			}
+		}
+	}
+	private boolean isProtected(Location location) {
+		for(Selection sel : protections){
+			if(sel.contains(location)){
+				return true;
+			}
+		}
+		return false;
 	}
 	@EventHandler
 	public void fireDamagePrevent(BlockBurnEvent event){
 		if(isntPvp(event.getBlock().getWorld())) event.setCancelled(true);
+		else if(isProtected(event.getBlock().getLocation())) event.setCancelled(true);
 	}
 	@EventHandler
 	public void fireSpreadControl(BlockSpreadEvent event){
 		if(isntPvp(event.getBlock().getWorld())&&event.getNewState().getType() == Material.FIRE) event.setCancelled(true);
+		else if(isProtected(event.getBlock().getLocation())) event.setCancelled(true);
 	}
 	@EventHandler
 	public void playerFireControl(PlayerInteractEvent event){
 		try{
-			if(isntPvp(event.getPlayer().getWorld())){
+			if(isntPvp(event.getPlayer().getWorld())||isProtected(event.getClickedBlock().getLocation())){
 				if(event.getItem().getType() == Material.FLINT_AND_STEEL){
 					if(!event.getPlayer().hasPermission("pppopp3.flintnsteel")){
 						if(event.getClickedBlock().getType() != Material.NETHERRACK){
@@ -106,7 +156,7 @@ public class AntiDiscordModule extends PSCmdExe {
 				return;
 			}
 		}
-		if(isntPvp(event.getEntity().getWorld())){
+		if(isntPvp(event.getEntity().getWorld())||isProtected(event.getEntity().getLocation())){
 			if(event instanceof EntityDamageByEntityEvent){
 				EntityDamageByEntityEvent edbee = (EntityDamageByEntityEvent)event;
 				Player target, damager;
@@ -132,6 +182,10 @@ public class AntiDiscordModule extends PSCmdExe {
 	}
 	@EventHandler
 	public void creatureSpawn(CreatureSpawnEvent event){
+		if(isProtected(event.getEntity().getLocation())){
+			event.setCancelled(true);
+			return;
+		}
 		if (event.getLocation().getWorld().getEnvironment() == World.Environment.NETHER&&event.getSpawnReason() == SpawnReason.NATURAL) {
 			spawns--;
 			if (spawns == 0) {
@@ -139,6 +193,18 @@ public class AntiDiscordModule extends PSCmdExe {
 				event.setCancelled(true);
 				event.getLocation().getWorld().spawnEntity(event.getLocation(), EntityType.BLAZE);
 			}
+		}
+	}
+	@EventHandler
+	public void blockBreak(BlockBreakEvent event){
+		if(isProtected(event.getBlock().getLocation())){
+			event.setCancelled(true);
+		}
+	}
+	@EventHandler
+	public void blockPlace(BlockPlaceEvent event){
+		if(isProtected(event.getBlock().getLocation())){
+			event.setCancelled(true);
 		}
 	}
 	@EventHandler
