@@ -91,6 +91,7 @@ public final class Ponyville extends PSCmdExe{
 			
 		}
 		p.save();
+		pl.setDisplayName(p.getNickname());
 		Bukkit.getPluginManager().callEvent(je);
 		event.setJoinMessage(je.getMsg());
 	}

@@ -197,7 +197,6 @@ public class Pony {
 		p.setTotalExperience(totalxp);
 	}
 	public void loadRemoteChest(){
-		//TODO
 		NBTTagCompound rcCompound = c.getCompound("remotechest");
 		String[] worlds = new String[]{"world","badlands"};
 		for(String world : worlds){
@@ -294,6 +293,13 @@ public class Pony {
 			notes.add(((NBTTagString)list.get(i)).toString());
 		}
 		return notes;
+	}
+	public Integer getRPAPassword() {
+		if(c.hasKey("rpapassword")){
+			return c.getInt("rpapassword");
+		} else {
+			return null;
+		}
 	}
 	
 	/*private getters*/
@@ -473,6 +479,15 @@ public class Pony {
 	public void setEmoteSilent(boolean flag){
 		getEmote().set("silent",new NBTTagByte("silent",getBoolByte(flag)));
 	}
+	public void setHornLeft(String s){
+		getHorn().set("left", new NBTTagString("left",s));
+	}
+	public void setHornRight(String s){
+		getHorn().set("right", new NBTTagString("right",s));
+	}
+	public void setHornOn(boolean flag){
+		getHorn().set("ison", new NBTTagByte("ison",getBoolByte(flag)));
+	}
 	public void setFirstLogon(String arg){
 		c.set("firstlogon",new NBTTagString("firstlogon",arg));
 	}
@@ -529,7 +544,10 @@ public class Pony {
 		Bukkit.broadcast(ChatColor.LIGHT_PURPLE+"Pinkie Pie: New note added for player "+getName()+"! \n"+noteToAdd, "pppopp3.alertnote");
 		notes.add(noteToAdd);
 		setNotes(notes);
-	}	
+	}
+	public void setRPAPassword(Integer i){
+		c.set("rpapassword", new NBTTagInt("rpapassword",i));
+	}
 	/*Utility methods*/
 	
 	private byte getBoolByte(boolean arg){
