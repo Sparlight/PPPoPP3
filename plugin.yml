@@ -227,6 +227,22 @@ commands:
     description: teleports a player to the top block in their collumn
     usage: /top
     permission: pppopp3.top
+  alert:
+    description: Alerts an OPony that they are needed on the server!
+    usage: /alert
+    permission: pppopp3.alert
+  setpassword:
+    description: set your RPA password. passwords are stored hashed in your player file.
+    usage: /setpassword password
+    permission: pppopp3.rpasetpw
+  rpadebug:
+    description: sets the debug status for the RPA Server
+    usage: /rpadebug <true|false>
+    permission: pppopp3.rpadebug
+  horn:
+    description: unicorn horn
+    usage: /horn <<on|off>/<left|right> <command>>
+    permission: pppopp3.unicornhorn
 permissions:
   pppopp3.pm.alertgroupchange:
     description: sends messages to players alerting to group changes
