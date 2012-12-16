@@ -2,9 +2,11 @@ package me.corriekay.pppopp3.chat;
 
 import java.io.File;
 
+import me.corriekay.packets.server.ChatPacket;
 import me.corriekay.pppopp3.modules.Equestria;
 import me.corriekay.pppopp3.ponyville.Pony;
 import me.corriekay.pppopp3.ponyville.Ponyville;
+import me.corriekay.pppopp3.rpa.RemotePonyAdmin;
 import me.corriekay.pppopp3.utils.PonyLogger;
 import me.corriekay.pppopp3.utils.Utils;
 
@@ -55,12 +57,10 @@ public class WorldChannel extends Channel{
 		if(log){
 			PonyLogger.logMessage("ChatLogs"+File.separator+Utils.getFileDate(System.currentTimeMillis()), this.name, "["+Utils.getTimeStamp(System.currentTimeMillis())+"] ["+ChatColor.stripColor(who)+"]: "+message);
 		}
-		/*TODO
 		ChatPacket cp = new ChatPacket();
 		cp.channel = name;
 		cp.message = ChatColor.stripColor(message2send);
 		RemotePonyAdmin.rpa.sendChatPacket(cp);
-		*/
 		return message2send;
 	}
 }

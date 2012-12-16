@@ -9,6 +9,7 @@ import me.corriekay.pppopp3.events.PrivateMessageEvent;
 import me.corriekay.pppopp3.events.QuitEvent;
 import me.corriekay.pppopp3.ponyville.Pony;
 import me.corriekay.pppopp3.ponyville.Ponyville;
+import me.corriekay.pppopp3.rpa.RemotePonyAdmin;
 import me.corriekay.pppopp3.utils.PSCmdExe;
 import me.corriekay.pppopp3.utils.PonyLogger;
 import me.corriekay.pppopp3.utils.Utils;
@@ -48,7 +49,7 @@ public class PonySpy extends PSCmdExe {
 		ChatPacket cp = new ChatPacket();
 		cp.message = ChatColor.stripColor(message);
 		cp.channel = "ponyspy";
-		//RemotePonyAdmin.rpa.sendChatPacket(cp); TODO
+		RemotePonyAdmin.rpa.sendChatPacket(cp);
 		PonyLogger.logMessage("ChatLogs" + File.separator+ Utils.getFileDate(System.currentTimeMillis()), "Private Messages", message);
 		for(String spy : spies){
 			if(spy.equals(event.getReciever().getName())||spy.equals(event.getSender().getName())){
