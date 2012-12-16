@@ -8,8 +8,10 @@ import java.util.List;
 import me.corriekay.pppopp3.Mane;
 import me.corriekay.pppopp3.events.JoinEvent;
 import me.corriekay.pppopp3.events.QuitEvent;
+import me.corriekay.pppopp3.modules.InvisibilityHandler;
 import me.corriekay.pppopp3.ponyville.Pony;
 import me.corriekay.pppopp3.ponyville.Ponyville;
+import me.corriekay.pppopp3.rpa.RemotePonyAdmin;
 import me.corriekay.pppopp3.utils.PSCmdExe;
 
 import org.bukkit.Bukkit;
@@ -123,7 +125,7 @@ public class PonyManager extends PSCmdExe {
 	public void onTeleport(PlayerTeleportEvent event){
 		calculatePerms(event.getPlayer(),event.getTo().getWorld());
 	}
-	@SuppressWarnings({ "unchecked", "unused" })
+	@SuppressWarnings("unchecked")
 	public boolean handleCommand(CommandSender sender, Command cmd, String label, String[] args){
 		if(cmd.getName().equals("manuadd")){
 			sendMessage(sender,"Command changed! new command is /setgroup <group>!");
@@ -132,9 +134,9 @@ public class PonyManager extends PSCmdExe {
 		if(cmd.getName().equals("list")){
 			int counter = 0;
 			for(Player p : Bukkit.getOnlinePlayers()){
-				//if(!InvisibilityHandler.ih.isHidden(p.getName())||sender.hasPermission("pppopp2.seehidden")){
+				if(!InvisibilityHandler.ih.isHidden(p.getName())||sender.hasPermission("pppopp2.seehidden")){
 					counter++;
-				//}//TODO invisibility check
+				}
 			}
 			sendMessage(sender,"There are "+counter+" of "+Bukkit.getServer().getMaxPlayers()+" max players online!");
 			boolean invsee = sender.hasPermission("pppopp2.seehidden");
@@ -197,8 +199,8 @@ public class PonyManager extends PSCmdExe {
 				return true;
 			}
 			setGroup(target,group);
-			Bukkit.broadcast(pinkieSays+target+"+ was moved to group "+group.getName(),"pppopp3.pm.alertgroupchange");
-			//TODO RPA MESSAGE
+			Bukkit.broadcast(pinkieSays+target+" was moved to group "+group.getName(),"pppopp3.pm.alertgroupchange");
+			RemotePonyAdmin.rpa.message(target+" was moved to group "+group.getName());
 			return true;
 		}
 		if(cmdn.equals("groupaddperm")){
@@ -320,7 +322,7 @@ public class PonyManager extends PSCmdExe {
 		return true;
 	}
 	private void setGroup(String target, PonyGroup group){
-		Pony p = Ponyville.getPony(target);
+		Pony p = Ponyville.getOfflinePony(target);
 		p.setGroup(group.getName());
 		p.save();
 		OfflinePlayer op = p.getPlayer();
@@ -330,14 +332,12 @@ public class PonyManager extends PSCmdExe {
 			calculatePerms(player,null);
 		}
 	}
-	@SuppressWarnings("unused")
 	private void removeHidden(HashSet<String> removefrom){
 		HashSet<String> removeMe = new HashSet<String>();
 		for(String p : removefrom){
-			//if(InvisibilityHandler.ih.isHidden(p)){
-				//removeMe.add(p);
-			//}
-			//TODO implement invisibility
+			if(InvisibilityHandler.ih.isHidden(p)){
+				removeMe.add(p);
+			}
 		}
 		removefrom.removeAll(removeMe);
 	}
