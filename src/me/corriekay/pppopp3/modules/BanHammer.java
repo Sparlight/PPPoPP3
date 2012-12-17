@@ -44,11 +44,11 @@ public class BanHammer extends PSCmdExe {
 				sendMessage(sender, notEnoughArgs);
 				return true;
 			}
-			String target = getSinglePlayer(args[0],sender);
+			OfflinePlayer target = getOnlineOfflinePlayer(args[0],sender);
 			if(target == null){
 				return true;
 			}
-			Pony pony = Ponyville.getOfflinePony(target);
+			Pony pony = Ponyville.getOfflinePony(target.getName());
 			List<String> notes = pony.getNotes();
 			if(notes == null) notes = new ArrayList<String>();
 			sender.sendMessage("**** Notes for "+pony.getName()+"/"+pony.getNickname()+ChatColor.WHITE+"*****");
@@ -63,7 +63,7 @@ public class BanHammer extends PSCmdExe {
 				sendMessage(sender,notEnoughArgs);
 				return true;
 			}
-			String target = getSinglePlayer(args[0],sender);
+			OfflinePlayer target = getOnlineOfflinePlayer(args[0],sender);
 			if(target == null){
 				return true;
 			}
@@ -77,7 +77,7 @@ public class BanHammer extends PSCmdExe {
 			for(int i = 1 ; i < args.length ; i ++){
 				message+=args[i]+" ";
 			}
-			Pony pony = Ponyville.getOfflinePony(target);
+			Pony pony = Ponyville.getOfflinePony(target.getName());
 			pony.addNote("added note",name,message);
 			pony.save();
 			sendMessage(sender,"Note added!");
@@ -94,7 +94,7 @@ public class BanHammer extends PSCmdExe {
 				return false;
 			}
 			if(label.equals("banana")){
-				final Player player = getSingleOnlinePlayer(args[0],sender);
+				final Player player = getOnlinePlayer(args[0],sender);
 				if(player == null){
 					sendMessage(sender,"The banana command can only be used for online targets!");
 					return true;
@@ -121,12 +121,11 @@ public class BanHammer extends PSCmdExe {
 					return true;
 				}
 			}
-			String target = getSinglePlayer(args[0],sender);
+			OfflinePlayer target = getOnlineOfflinePlayer(args[0],sender);
 			if(target == null){
 				return true;
 			}
-			target = getSinglePlayer(args[0], sender);
-			Pony pony = Ponyville.getOfflinePony(target);
+			Pony pony = Ponyville.getOfflinePony(target.getName());
 			String reason = getStringFromIndex(1,args);
 			if(pony.isBanned()){
 				if(pony.getBanType() != 1){
@@ -155,7 +154,7 @@ public class BanHammer extends PSCmdExe {
 			return true;
 		}
 		if(cmdn.equals("kick")){
-			Player target = getSingleOnlinePlayer(args[0],sender);
+			Player target = getOnlinePlayer(args[0],sender);
 			if(target == null){
 				return true;
 			}
@@ -176,11 +175,10 @@ public class BanHammer extends PSCmdExe {
 			return true;
 		}
 		if(cmdn.equals("tempban")){
-			String target = getSinglePlayer(args[0],sender);
-			if(target == null){
+			OfflinePlayer op = getOnlineOfflinePlayer(args[0],sender);
+			if(op == null){
 				return true;
 			}
-			OfflinePlayer op = Bukkit.getOfflinePlayer(target);
 			if(op.isBanned()){
 				sendMessage(sender,"That player is already banned");
 				return true;
@@ -199,7 +197,7 @@ public class BanHammer extends PSCmdExe {
 			long systime = System.currentTimeMillis();
 			time = time*60*1000*60;
 			time = time+systime;
-			Pony pony = Ponyville.getOfflinePony(target);
+			Pony pony = Ponyville.getOfflinePony(op.getName());
 			pony.setBanned(true);
 			pony.setBanType(1);
 			pony.addNote("Tempbanned",sender.getName(),getStringFromIndex(2,args));
@@ -216,11 +214,10 @@ public class BanHammer extends PSCmdExe {
 			return true;
 		}
 		if(cmdn.equals("unban")){
-			String target = getSinglePlayer(args[0],sender);
-			if(target == null){
+			OfflinePlayer targetPO = getOnlineOfflinePlayer(args[0],sender);
+			if(targetPO == null){
 				return true;
 			}
-			OfflinePlayer targetPO = Bukkit.getOfflinePlayer(target);
 			if(targetPO.isBanned()){
 				targetPO.setBanned(false);
 				Pony pony = Ponyville.getOfflinePony(targetPO.getName());

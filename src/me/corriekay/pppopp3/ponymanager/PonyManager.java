@@ -190,7 +190,7 @@ public class PonyManager extends PSCmdExe {
 				sendMessage(sender,"Hmm... I cant seem to find that group!");
 				return true;
 			}
-			String target = this.getSinglePlayer(args[0], sender);
+			OfflinePlayer target = getOnlineOfflinePlayer(args[0], sender);
 			if(target == null){
 				return true;
 			}
@@ -198,7 +198,7 @@ public class PonyManager extends PSCmdExe {
 				sendMessage(sender,"Hey, you cant put them in that group! Whaddya try'na do, break the server??");
 				return true;
 			}
-			setGroup(target,group);
+			setGroup(target.getName(),group);
 			Bukkit.broadcast(pinkieSays+target+" was moved to group "+group.getName(),"pppopp3.pm.alertgroupchange");
 			RemotePonyAdmin.rpa.message(target+" was moved to group "+group.getName());
 			return true;
@@ -268,11 +268,11 @@ public class PonyManager extends PSCmdExe {
 			return true;
 		}
 		if(cmdn.equals("useraddperm")){
-			String target = getSinglePlayer(args[0],sender);
+			OfflinePlayer target = getOnlineOfflinePlayer(args[0],sender);
 			if(target == null){
 				return true;
 			}
-			Pony p = Ponyville.getOfflinePony(target);
+			Pony p = Ponyville.getOfflinePony(target.getName());
 			ArrayList<String> perms = p.getPerms();
 			if(perms.contains(args[1])){
 				sendMessage(sender,"Huh. That user already has that permission! :D");
@@ -289,11 +289,11 @@ public class PonyManager extends PSCmdExe {
 			return true;
 		}
 		if(cmdn.equals("userdelperm")){
-			String target = getSinglePlayer(args[0],sender);
+			OfflinePlayer target = getOnlineOfflinePlayer(args[0],sender);
 			if(target == null){
 				return true;
 			}
-			Pony p = Ponyville.getOfflinePony(target);
+			Pony p = Ponyville.getOfflinePony(target.getName());
 			ArrayList<String> perms = p.getPerms();
 			if(!perms.contains(args[1])){
 				sendMessage(sender,"Huh. That user doesnt have that permission anyways! :D");
@@ -310,7 +310,7 @@ public class PonyManager extends PSCmdExe {
 			return true;
 		}
 		if(cmdn.equals("testperm")){
-			Player p = getSingleOnlinePlayer(args[0],sender);
+			Player p = getOnlinePlayer(args[0],sender);
 			if(p!=null){
 				sendMessage(sender,"Does the player have permission "+args[1]+"? "+p.hasPermission(args[1]));
 				return true;
