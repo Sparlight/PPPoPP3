@@ -4,6 +4,7 @@ import java.util.HashSet;
 
 import me.corriekay.pppopp3.chat.ChatHandler;
 import me.corriekay.pppopp3.chat.PonySpy;
+import me.corriekay.pppopp3.emote.MineLittleEmote;
 import me.corriekay.pppopp3.modules.AfkHandler;
 import me.corriekay.pppopp3.modules.AntiDiscordModule;
 import me.corriekay.pppopp3.modules.BanHammer;
@@ -11,6 +12,7 @@ import me.corriekay.pppopp3.modules.EntityLogger;
 import me.corriekay.pppopp3.modules.Equestria;
 import me.corriekay.pppopp3.modules.InvisibilityHandler;
 import me.corriekay.pppopp3.modules.RemoteChest;
+import me.corriekay.pppopp3.modules.SpamHandler;
 import me.corriekay.pppopp3.modules.UnicornHorn;
 import me.corriekay.pppopp3.modules.WorldEditHookModule;
 import me.corriekay.pppopp3.modules.XrayLogger;
@@ -49,6 +51,8 @@ public class Mane extends JavaPlugin{
 		try{modules.add(new RemotePonyAdmin());}catch(Exception e){e.printStackTrace();}
 		modules.add(new UnicornHorn());
 		try{modules.add(new XrayLogger());}catch(Exception e){e.printStackTrace();}
+		modules.add(new SpamHandler());
+		modules.add(new MineLittleEmote());
 	}
 	public void onDisable(){
 		for(PSCmdExe exe : modules){

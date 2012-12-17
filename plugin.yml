@@ -243,6 +243,26 @@ commands:
     description: unicorn horn
     usage: /horn <<on|off>/<left|right> <command>>
     permission: pppopp3.unicornhorn
+  mle:
+    description: lists emotes
+    usage: /mle
+    permission: pppopp3.mle
+  mles:
+    description: activates the set emote module. Will walk players through setting their emote.
+    usage: /mles
+    permission: pppopp3.mles
+  mee:
+    description: utilizes an emote
+    usage: /mee <emote> <target>
+    permission: pppopp3.mle
+  deleteemote:
+    description: deletes your emote permenantly and removes it from the server
+    usage: /deleteemote
+    permission: pppopp3.mles
+  mleban:
+    description: bans a player from mle
+    usage: /mleban <playername>
+    permission: pppopp3.mleban
 permissions:
   pppopp3.pm.alertgroupchange:
     description: sends messages to players alerting to group changes
