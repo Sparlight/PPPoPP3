@@ -100,7 +100,7 @@ public class ChatHandler extends PSCmdExe {
 				sendMessage(sender,notEnoughArgs);
 				return true;
 			}
-			Player player = getSingleOnlinePlayer(args[0],sender);
+			Player player = getOnlinePlayer(args[0],sender);
 			if(player == null){
 				return true;
 			}
@@ -183,7 +183,7 @@ public class ChatHandler extends PSCmdExe {
 				sendMessage(player,notEnoughArgs);
 				return true;
 			}
-			String sop = getSinglePlayer(args[0], player);
+			String sop = getOfflinePlayer(args[0], player);
 			if(sop == null){
 				return true;
 			}
@@ -316,7 +316,7 @@ public class ChatHandler extends PSCmdExe {
 				sendMessage(player,notEnoughArgs);
 				return true;
 			}
-			Player target = getSingleOnlinePlayer(args[0],player);
+			Player target = getOnlinePlayer(args[0],player);
 			if(target == null){
 				return true;
 			}

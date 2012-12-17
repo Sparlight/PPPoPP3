@@ -17,6 +17,7 @@ import me.corriekay.pppopp3.utils.PSCmdExe;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.command.Command;
@@ -282,11 +283,11 @@ public class WarpHandler extends PSCmdExe {
 				sendMessage(player,"/pwplayer <player> back -  This teleports to their back location!");
 				return true;
 			}
-			String target = getSinglePlayer(args[0], player);
+			OfflinePlayer target = getOnlineOfflinePlayer(args[0], player);
 			if(target == null){
 				return true;
 			}
-			Pony pony = Ponyville.getOfflinePony(target);
+			Pony pony = Ponyville.getOfflinePony(target.getName());
 			if(args[1].equals("list")){
 				ArrayList<String> warps = new ArrayList<String>();
 				warps.addAll(pony.getAllNamedWarps().keySet());
@@ -426,7 +427,7 @@ public class WarpHandler extends PSCmdExe {
 			return true;
 		}
 		if(cmd.getName().equals("tp")){
-			Player target = getSingleOnlinePlayer(args[0],player);
+			Player target = getOnlinePlayer(args[0],player);
 			if(target == null){
 				return true;
 			}
@@ -440,7 +441,7 @@ public class WarpHandler extends PSCmdExe {
 			return true;
 		}
 		if(cmd.getName().equals("tphere")){
-			Player target = getSingleOnlinePlayer(args[0],player);
+			Player target = getOnlinePlayer(args[0],player);
 			if(target == null){
 				return true;
 			}

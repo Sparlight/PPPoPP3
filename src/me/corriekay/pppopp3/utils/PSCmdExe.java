@@ -1,27 +1,28 @@
 package me.corriekay.pppopp3.utils;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import me.corriekay.pppopp3.Mane;
-import me.corriekay.pppopp3.ponyville.Pony;
-import me.corriekay.pppopp3.ponyville.Ponyville;
+import me.corriekay.pppopp3.modules.InvisibilityHandler;
+import me.corriekay.pppopp3.rpa.RemotePonyAdmin;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.craftbukkit.CraftOfflinePlayer;
+import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventException;
@@ -162,36 +163,10 @@ public abstract class PSCmdExe implements EventExecutor, CommandExecutor, Listen
 		}
 		requester.sendMessage(message);
 	}
-	
-	private void tooManyMatches(List<Player> playerNames, CommandSender requester){
-		String message = pinkieSays+"There were too many matches!!";
-		for(Player derp : playerNames){
-			message+= derp.getName()+ChatColor.LIGHT_PURPLE+" ";
-		}
-		requester.sendMessage(message);
-	}
 	/**
 	 * Player get methods
 	 */
-	protected Pony getSingleOnlinePony(String pName, CommandSender requester){
-		Player target = getSingleOnlinePlayer(pName,requester);
-		if(target == null){
-			return null;
-		}
-		Pony pony = Ponyville.getPony(target);
-		if (pony == null){
-			Mane.getInstance().getLogger().severe("PONYVILLE OUT OF SYNC WITH ONLINE PLAYERS. PONY NOT FOUND IN PONYVILLE");
-			StackTraceElement[] ste = Thread.getAllStackTraces().get(Thread.currentThread());
-			StringBuilder e = new StringBuilder();
-			for(StackTraceElement s : ste){
-				e.append(s.toString()+"\n");
-			}
-			System.out.println(e);
-			return null;
-		}
-		return pony;
-	}
-	protected Player getSingleOnlinePlayer(String pName, CommandSender requester){
+	protected Player getOnlinePlayer(String pName, CommandSender requester){
 		pName = pName.toLowerCase();
 		ArrayList<String> players = new ArrayList<String>();
 		for(Player player : Bukkit.getOnlinePlayers()){
@@ -201,9 +176,9 @@ public abstract class PSCmdExe implements EventExecutor, CommandExecutor, Listen
 				return player;
 			} else {
 				if(playername.contains(pName)||playerDname.contains(pName)){
-					//if(!InvisibilityHandler.ih.isHidden(player.getName())||requester.hasPermission("pppopp2.seehidden")){
-						players.add(player.getName()); //TODO add invis check
-					//}
+					if(!InvisibilityHandler.ih.isHidden(player.getName())||requester.hasPermission("pppopp2.seehidden")){
+						players.add(player.getName()); 
+					}
 				}
 			}
 		}
@@ -217,66 +192,6 @@ public abstract class PSCmdExe implements EventExecutor, CommandExecutor, Listen
 			return Bukkit.getPlayerExact(players.get(0));
 		}
 	}
-	protected Pony getOnlinePonyCanNull(String pName, CommandSender requester){
-		ArrayList<Player> players = getOnlinePlayerCanNull(pName,requester);
-		if(players.size()<1){
-			return null;
-		} else {
-			try {
-				Pony pony = new Pony(players.get(0));
-				return pony;
-			} catch (FileNotFoundException e) {
-				return null;
-			}
-		}
-	}
-	protected ArrayList<Player> getOnlinePlayerCanNull(String pName, CommandSender requester){
-		pName = pName.toLowerCase();
-		ArrayList<Player> players = new ArrayList<Player>();
-		for(Player player : Bukkit.getOnlinePlayers()){
-			if(player.getName().toLowerCase().equals(pName)||ChatColor.stripColor(player.getDisplayName()).toLowerCase().equals(pName)){
-				players = new ArrayList<Player>();
-				players.add(player);
-				return players;
-			}
-			if (player.getName().toLowerCase().contains(pName)||ChatColor.stripColor(player.getDisplayName()).toLowerCase().contains(pName)) {
-				//if (InvisibilityHandler.ih.isHidden(player.getName())) {
-					if (requester.hasPermission("pppopp2.seehidden")) {
-						players.add(player);
-					}
-				//} else {
-					players.add(player);//TODO add invis check
-				//}
-			}
-		}
-		if(players.size()>1){
-			tooManyMatches(players,requester);
-			return null;
-		} else {
-			return players;
-		}
-	}
-        /**
-         * Works like {@link 
-         * #getSinglePlayer(String, CommandSender) getSinglePlayer},
-         * except it returns a Pony object rather than a String.
-         * @param pName Full or partial String of a username to find. 
-         * @param requester Reference to the issuer of the command.
-         * @return Pony object that would be returned by getSinglePlayer.
-         * @see #getSinglePlayer(String, CommandSender) 
-         */
-	protected Pony getSinglePony(String pName, CommandSender requester){
-		String target = getSinglePlayer(pName,requester);
-		if(target == null){
-			return null;
-		}
-		try {
-			Pony pony = new Pony(target);
-			return pony;
-		} catch (FileNotFoundException e) {
-			return null;
-		}
-	}
         /**
          * Returns a String object based on the parameters given that returns 
          * null should more than one player file contain pName.  This will only
@@ -287,7 +202,7 @@ public abstract class PSCmdExe implements EventExecutor, CommandExecutor, Listen
          *         the extensionless filename of the player's file that contains
          *         pName.  Otherwise, this returns <code>null</code>.
          */
-	protected String getSinglePlayer(String pName, CommandSender requester){
+	protected String getOfflinePlayer(String pName, CommandSender requester){
 		pName = pName.toLowerCase();
 		ArrayList<String> player = new ArrayList<String>();
 		File dir = new File(Mane.getInstance().getDataFolder()+File.separator+"Players");
@@ -315,7 +230,64 @@ public abstract class PSCmdExe implements EventExecutor, CommandExecutor, Listen
 		}
 		return player.get(0);
 	}
-
+	protected OfflinePlayer getOnlineOfflinePlayer(String pName, CommandSender requester){
+		pName = pName.toLowerCase();
+		ArrayList<String> player = new ArrayList<String>();
+		for(Player p : Bukkit.getOnlinePlayers()){
+			String name = ChatColor.stripColor(p.getName()).toLowerCase();
+			String nickname = ChatColor.stripColor(p.getDisplayName().toLowerCase());
+			if(name.contains(pName)||nickname.contains(pName)){
+				if(InvisibilityHandler.ih.isHidden(p.getName())&&!requester.hasPermission("pppopp3.seehidden")){
+					continue;
+				}
+				if(name.equals(pName)||nickname.equals(pName)){
+					return p;
+				} else {
+					player.add(p.getName());
+				}
+			}
+		}
+		if(player.size()>1){
+			tooManyMatches(player,requester);
+			return null;
+		} else if(player.size() == 1){
+			return Bukkit.getOfflinePlayer(player.get(0));
+		} else {
+			File dir = new File(Mane.getInstance().getDataFolder()+File.separator+"Players");
+			if(!dir.isDirectory()){
+				sendMessage(requester,"I looked high and low, but I couldnt find that pony! :C");
+				return null;
+			}
+			File[] files = dir.listFiles();
+			for(File file : files){
+				String name = file.getName().toLowerCase();
+				if(name.contains(pName)){
+					if(name.equals(pName)){
+						return Bukkit.getOfflinePlayer(file.getName());
+					} else {
+						player.add(file.getName());
+					}
+				}
+			}
+			if(player.size()>1){
+				tooManyMatches(player,requester);
+				return null;
+			} else if (player.size()<1){
+				sendMessage(requester,cantFindPlayer);
+				return null;
+			} else {
+				OfflinePlayer op = Bukkit.getOfflinePlayer(player.get(0));
+				if(op.isOnline()){
+					op = new CraftOfflinePlayer((CraftServer) Bukkit.getServer(), player.get(0)){
+						public Player getPlayer(){
+							return null;
+						}
+					};
+				}
+				return op;
+			}
+		}
+	}
         /**
          * Sends a message to all Players connected, including the console.
          * @param message Message to send.
@@ -325,17 +297,17 @@ public abstract class PSCmdExe implements EventExecutor, CommandExecutor, Listen
 			p.sendMessage(message);
 		}
 		console.sendMessage(message);
-		//RemotePonyAdmin.rpa.message(message); //TODO
+		RemotePonyAdmin.rpa.message(message);
 		
 	}
-	public void saveNamedConfig(String name, FileConfiguration config){
+	public static void saveNamedConfig(String name, FileConfiguration config){
 		try {
 			config.save(new File(Mane.getInstance().getDataFolder(),name));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	public FileConfiguration getNamedConfig(String name){
+	public static FileConfiguration getNamedConfig(String name){
 		File file = new File(Mane.getInstance().getDataFolder(),name);
 		if(!file.exists()){
 			try {
