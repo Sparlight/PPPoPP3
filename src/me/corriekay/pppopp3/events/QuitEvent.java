@@ -1,4 +1,5 @@
 package me.corriekay.pppopp3.events;
+
 /**
  * @Class: QuitEvent
  * @Author: CorrieKay
@@ -14,7 +15,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 public class QuitEvent extends Event implements Cancellable{
-	
+
 	private boolean cancelled = false;
 	private final boolean quitting;
 	private static final HandlerList handlers = new HandlerList();
@@ -22,31 +23,32 @@ public class QuitEvent extends Event implements Cancellable{
 	private final String qmDef;
 	private final Pony pony;
 	private final Player player;
+
 	public QuitEvent(Player player, Pony pony, boolean isQuitting){
 		quitting = isQuitting;
-		qmDef = ChatColor.RED+pony.getNickname()+ChatColor.AQUA+" has left Equestria!";
+		qmDef = ChatColor.RED + pony.getNickname() + ChatColor.AQUA + " has left Equestria!";
 		quitMessage = qmDef;
 		this.pony = pony;
 		this.player = player;
 	}
 
 	@Override
-	public HandlerList getHandlers() {
+	public HandlerList getHandlers(){
 		return handlers;
 	}
-	
+
 	public static HandlerList getHandlerList(){
 		return handlers;
 	}
 
 	@Override
-	public boolean isCancelled() {
+	public boolean isCancelled(){
 		return cancelled;
 	}
 
 	@Override
-	public void setCancelled(boolean arg0) {
-		if(arg0){
+	public void setCancelled(boolean arg0){
+		if(arg0) {
 			setQuitMessage(null);
 		} else {
 			setQuitMessage(qmDef);
@@ -57,8 +59,8 @@ public class QuitEvent extends Event implements Cancellable{
 	public Pony getPony(){
 		return pony;
 	}
-	
-	public Player getPlayer() {
+
+	public Player getPlayer(){
 		return player;
 	}
 
@@ -69,6 +71,7 @@ public class QuitEvent extends Event implements Cancellable{
 	public void setQuitMessage(String msg){
 		quitMessage = msg;
 	}
+
 	public String getMsg(){
 		return quitMessage;
 	}

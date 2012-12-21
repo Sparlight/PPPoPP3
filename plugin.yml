@@ -263,6 +263,15 @@ commands:
     description: bans a player from mle
     usage: /mleban <playername>
     permission: pppopp3.mleban
+  invsee:
+    description: sees an inventory
+    usage: /invsee <player>
+    permission: pppopp3.invsee
+  commitinventorychange:
+    description: commits a change to an offline player
+    usage: /cic <player>
+    permission: pppopp3.cic
+    aliases: [cic]
 permissions:
   pppopp3.pm.alertgroupchange:
     description: sends messages to players alerting to group changes
