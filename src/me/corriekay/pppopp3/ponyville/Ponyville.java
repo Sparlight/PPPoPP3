@@ -8,6 +8,7 @@ import me.corriekay.pppopp3.Mane;
 import me.corriekay.pppopp3.events.JoinEvent;
 import me.corriekay.pppopp3.events.QuitEvent;
 import me.corriekay.pppopp3.modules.Equestria;
+import me.corriekay.pppopp3.modules.InvSee;
 import me.corriekay.pppopp3.utils.PSCmdExe;
 import me.corriekay.pppopp3.utils.Utils;
 
@@ -23,64 +24,73 @@ public final class Ponyville extends PSCmdExe{
 
 	private HashMap<String,Pony> ponies = new HashMap<String,Pony>();
 	private static Ponyville pv;
-	
+
 	public Ponyville(){
 		super("Ponyville");
 		pv = this;
-		File dir = new File(Mane.getInstance().getDataFolder()+File.separator+"Players");
-		if(!dir.isDirectory()){
+		File dir = new File(Mane.getInstance().getDataFolder() + File.separator + "Players");
+		if(!dir.isDirectory()) {
 			dir.mkdirs();
 		}
 		init();
 	}
+
 	private void init(){
-		for(Player p : Bukkit.getOnlinePlayers()){
+		for(Player p : Bukkit.getOnlinePlayers()) {
 			Ponyville.addPony(p);
 		}
 	}
-	
+
 	public static Pony getPony(Player p){
 		return getPony(p.getName());
 	}
+
 	public static Pony getPony(String s){
 		return pv.ponies.get(s);
 	}
+
 	public static void removePony(Player p){
 		removePony(p.getName());
 	}
+
 	public static void removePony(Pony p){
 		removePony(p.getName());
 	}
+
 	public static void removePony(String s){
 		Pony p = getPony(s);
 		p.save();
 		pv.ponies.remove(s);
 	}
+
 	public static Pony addPony(Player p){
 		Pony po = Pony.moveToPonyville(p);
 		pv.ponies.put(p.getName(), po);
 		return po;
 	}
-	public static Pony getOfflinePony(Player p ){
+
+	public static Pony getOfflinePony(Player p){
 		return getOfflinePony(p.getName());
 	}
+
 	public static Pony getOfflinePony(String p){
 		Pony pony = getPony(p);
-		if(pony == null){
+		if(pony == null) {
 			try {
 				return new Pony(p);
-			} catch (FileNotFoundException e) {
+			} catch(FileNotFoundException e) {
 				return null;
 			}
 		} else {
 			return pony;
 		}
 	}
+
 	@EventHandler
 	public void onJoin(PlayerJoinEvent event){
 		Player pl = event.getPlayer();
 		Pony p = addPony(pl);
-		JoinEvent je = new JoinEvent(pl,p,true);
+		JoinEvent je = new JoinEvent(pl, p, true);
 		{
 			//load info on player join
 			PlayerInventory i = pl.getInventory();
@@ -88,16 +98,17 @@ public final class Ponyville extends PSCmdExe{
 			i.setContents(i2.getContents());
 			i.setArmorContents(i2.getArmorContents());
 			p.setLastLogon(Utils.getSystemTime(System.currentTimeMillis()));
-			
+
 		}
 		p.save();
 		pl.setDisplayName(p.getNickname());
 		Bukkit.getPluginManager().callEvent(je);
 		event.setJoinMessage(je.getMsg());
 	}
+
 	@EventHandler
 	public void onQuit(PlayerQuitEvent event){
-		QuitEvent qe = new QuitEvent(event.getPlayer(),getPony(event.getPlayer()),true);
+		QuitEvent qe = new QuitEvent(event.getPlayer(), getPony(event.getPlayer()), true);
 		Bukkit.getPluginManager().callEvent(qe);
 		event.setQuitMessage(qe.getMsg());
 		Player pl = event.getPlayer();
@@ -105,12 +116,12 @@ public final class Ponyville extends PSCmdExe{
 		{
 			//Saved info on quit.
 			p.setLastLogout(Utils.getSystemTime(System.currentTimeMillis()));
-			for(World w : Bukkit.getWorlds()){
-				if(p.getRemoteChest(w)!=null){
+			for(World w : Bukkit.getWorlds()) {
+				if(p.getRemoteChest(w) != null) {
 					p.saveRemoteChest(w);
 				}
 			}
-			p.setInventory(pl.getInventory(), Equestria.get().getParentWorld(pl.getWorld()).getName());
+			if(!InvSee.get().isInvsee(pl.getName())) p.setInventory(pl.getInventory(), Equestria.get().getParentWorld(pl.getWorld()).getName());
 		}
 		p.save();
 		removePony(event.getPlayer());
