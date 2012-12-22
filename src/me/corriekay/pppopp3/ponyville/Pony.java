@@ -39,6 +39,13 @@ public class Pony{
 		op = Bukkit.getOfflinePlayer(pone);
 	}
 
+	public Pony(File file) throws Exception{
+		datFile = file;
+		c = NBTCompressedStreamTools.a(new FileInputStream(datFile));
+		loadRemoteChest();
+		op = Bukkit.getOfflinePlayer(getName());
+	}
+
 	public World getRCWorld(Inventory i){
 		return Bukkit.getWorld(rcWorlds.get(i));
 	}
@@ -373,22 +380,24 @@ public class Pony{
 	}
 
 	private NBTTagCompound getLocationCompound(Location l){
-		String w;
-		long x, y, z;
-		float p, yaw;
-		w = l.getWorld().getName();
-		x = (long)l.getX();
-		y = (long)l.getY();
-		z = (long)l.getZ();
-		p = l.getPitch();
-		yaw = l.getYaw();
 		NBTTagCompound loc = new NBTTagCompound();
-		loc.set("world", new NBTTagString("world", w));
-		loc.set("x", new NBTTagLong("x", x));
-		loc.set("y", new NBTTagLong("y", y));
-		loc.set("z", new NBTTagLong("z", z));
-		loc.set("pitch", new NBTTagFloat("pitch", p));
-		loc.set("yaw", new NBTTagFloat("yaw", yaw));
+		if(l != null) {
+			String w;
+			long x, y, z;
+			float p, yaw;
+			w = l.getWorld().getName();
+			x = (long)l.getX();
+			y = (long)l.getY();
+			z = (long)l.getZ();
+			p = l.getPitch();
+			yaw = l.getYaw();
+			loc.set("world", new NBTTagString("world", w));
+			loc.set("x", new NBTTagLong("x", x));
+			loc.set("y", new NBTTagLong("y", y));
+			loc.set("z", new NBTTagLong("z", z));
+			loc.set("pitch", new NBTTagFloat("pitch", p));
+			loc.set("yaw", new NBTTagFloat("yaw", yaw));
+		}
 		return loc;
 	}
 
@@ -452,6 +461,10 @@ public class Pony{
 
 	public void setInventory(org.bukkit.inventory.PlayerInventory inv, String name){
 		c.getCompound("inventories").set(name, ((CraftInventoryPlayer)inv).getInventory().a(new NBTTagList()));
+	}
+
+	public void wipeWorldStats(){
+		c.set("worlds", new NBTTagCompound());
 	}
 
 	public static void setWorldStats(Player p, String worldName){
@@ -576,7 +589,7 @@ public class Pony{
 
 	public boolean removeNamedWarp(String warpname){
 		if(getWarps().hasKey(warpname)) {
-			getWarps().set(warpname, null);
+			getWarps().o(warpname);
 			return true;
 		} else {
 			return false;

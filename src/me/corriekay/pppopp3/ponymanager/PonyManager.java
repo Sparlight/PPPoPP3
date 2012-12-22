@@ -373,6 +373,14 @@ public class PonyManager extends PSCmdExe{
 		return(p.getGroup());
 	}
 
+	public static boolean isFilly(Player player){
+		return isFilly(player.getName());
+	}
+
+	public static boolean isFilly(String player){
+		return ponyManager.groupsList.get("filly").contains(player);
+	}
+
 	public void deactivate(){
 		for(Player p : Bukkit.getOnlinePlayers()) {
 			PermissionAttachment pa = playerPerms.get(p.getName());

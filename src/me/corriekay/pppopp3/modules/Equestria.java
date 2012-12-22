@@ -53,16 +53,17 @@ public class Equestria extends PSCmdExe{
 				gm = GameMode.SURVIVAL;
 				System.out.println(world + " gamemode is null, defaulting to survival");
 			}
-			World w = loadWorld(world, e, wt);
+			String seed = worldconfig.getString("worldconfig." + world + ".seed");
+			World w = loadWorld(world, e, wt, seed);
 			worlds.put(w, w);
 			parentWorlds.add(w);
 			gamemodes.put(w, gm);
 			if(worldconfig.getBoolean("worldconfig." + world + ".end")) {
-				World end = loadWorld(world + "_the_end", Environment.THE_END, WorldType.LARGE_BIOMES);
+				World end = loadWorld(world + "_the_end", Environment.THE_END, WorldType.LARGE_BIOMES, seed);
 				worlds.put(end, w);
 			}
 			if(worldconfig.getBoolean("worldconfig." + world + ".end")) {
-				World nether = loadWorld(world + "_nether", Environment.NETHER, WorldType.LARGE_BIOMES);
+				World nether = loadWorld(world + "_nether", Environment.NETHER, WorldType.LARGE_BIOMES, seed);
 				worlds.put(nether, w);
 			}
 		}
@@ -76,13 +77,20 @@ public class Equestria extends PSCmdExe{
 		}
 	}
 
-	public World loadWorld(String worldname, Environment e, WorldType wt){
+	public World loadWorld(String worldname, Environment e, WorldType wt, String seed){
 		World w = Bukkit.getWorld(worldname);
 		if(w != null) {
 			return w;
 		}
 		WorldCreator wc = new WorldCreator(worldname);
 		wc.environment(e).type(wt);
+		long s;
+		try {
+			s = Long.parseLong(seed);
+		} catch(Exception ex) {
+			s = seed.hashCode();
+		}
+		wc.seed(s);
 		if(worldname.equals("equestria")) {
 			wc.generateStructures(false);
 			wc.generator(new FlatWorldGenerator());
