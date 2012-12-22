@@ -20,6 +20,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 
@@ -33,9 +34,10 @@ public class InvisibilityHandler extends PSCmdExe{
 	private final ArrayList<String> noPickup = new ArrayList<String>();
 	public static InvisibilityHandler ih;
 
-	public InvisibilityHandler(){
+	public InvisibilityHandler() throws Exception{
 		super("InventoryHandler", "hide", "nopickup");
 		ih = this;
+		methodMap.put(EntityTargetLivingEntityEvent.class, this.getClass().getMethod("onTarget", EntityTargetEvent.class));
 		for(Player player : Bukkit.getOnlinePlayers()) {
 			calculateInvisibility(player, false, DisguiseCraft.getAPI().isDisguised(player), false);
 		}
@@ -201,7 +203,7 @@ public class InvisibilityHandler extends PSCmdExe{
 	}
 
 	@EventHandler
-	public void onTarget(EntityTargetLivingEntityEvent event){
+	public void onTarget(EntityTargetEvent event){
 		if(event.getTarget() instanceof Player) {
 			if(isHidden(((Player)event.getTarget()).getName())) {
 				event.setCancelled(true);
