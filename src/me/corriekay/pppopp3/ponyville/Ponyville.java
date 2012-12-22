@@ -102,6 +102,7 @@ public final class Ponyville extends PSCmdExe{
 		}
 		p.save();
 		pl.setDisplayName(p.getNickname());
+		Pony.getWorldStats(pl, pl.getWorld().getName());
 		Bukkit.getPluginManager().callEvent(je);
 		event.setJoinMessage(je.getMsg());
 	}
@@ -121,6 +122,7 @@ public final class Ponyville extends PSCmdExe{
 					p.saveRemoteChest(w);
 				}
 			}
+			Pony.setWorldStats(pl, pl.getWorld().getName());
 			if(!InvSee.get().isInvsee(pl.getName())) p.setInventory(pl.getInventory(), Equestria.get().getParentWorld(pl.getWorld()).getName());
 		}
 		p.save();

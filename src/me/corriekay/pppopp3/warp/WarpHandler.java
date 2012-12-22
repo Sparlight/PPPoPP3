@@ -27,6 +27,7 @@ import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
 public class WarpHandler extends PSCmdExe{
 
+	private static WarpHandler wh;
 	private HashMap<String,WarpList> warpHandler = new HashMap<String,WarpList>();
 	private HashMap<String,QueuedWarp> warpQueues = new HashMap<String,QueuedWarp>();
 	private HashMap<String,String> tpQueues = new HashMap<String,String>();
@@ -39,7 +40,7 @@ public class WarpHandler extends PSCmdExe{
 
 	public WarpHandler() throws Exception{
 		super("WarpHandler", "gw", "pw", "pwlist", "pwdel", "pwset", "gwset", "gwdel", "pwplayer", "tp", "tpa", "tpd", "tphere", "home", "sethome", "back", "spawn", "setspawn", "top");
-		//wh = this;
+		wh = this;
 		FileConfiguration config = getNamedConfig("warps.yml");
 		buildWarpList(config);
 		for(Player player : Bukkit.getOnlinePlayers()) {
@@ -534,6 +535,10 @@ public class WarpHandler extends PSCmdExe{
 			return;
 		}
 
+	}
+
+	public static Location getWorldSpawn(){
+		return wh.spawns.get(Bukkit.getWorld("world"));
 	}
 
 	@EventHandler
