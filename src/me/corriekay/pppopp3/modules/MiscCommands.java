@@ -46,8 +46,12 @@ public class MiscCommands extends PSCmdExe{
 				nickname = nickname.replace("&0", "");
 			}
 			nickname = ChatColor.translateAlternateColorCodes('&', nickname);
-			if(ChatColor.stripColor(nickname).toCharArray().length > 20) {
+			if(ChatColor.stripColor(nickname).length() > 20) {
 				sendMessage(player, "Boy, thats a long nickname! You should shorten it a bit!");
+				return true;
+			}
+			if(ChatColor.stripColor(nickname).length() < 1) {
+				sendMessage(player, "Boy, thats a short nickname! You should lengthen it a bit!");
 				return true;
 			}
 			Pony pony = Ponyville.getPony(player);
