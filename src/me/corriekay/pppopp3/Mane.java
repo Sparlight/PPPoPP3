@@ -8,6 +8,7 @@ import me.corriekay.pppopp3.emote.MineLittleEmote;
 import me.corriekay.pppopp3.modules.*;
 import me.corriekay.pppopp3.ponymanager.PonyManager;
 import me.corriekay.pppopp3.ponyville.Ponyville;
+import me.corriekay.pppopp3.remotechest.RemoteChest;
 import me.corriekay.pppopp3.rpa.RemotePonyAdmin;
 import me.corriekay.pppopp3.utils.PSCmdExe;
 import me.corriekay.pppopp3.warp.WarpHandler;
@@ -70,6 +71,11 @@ public class Mane extends JavaPlugin{
 		modules.add(new SpamHandler());
 		modules.add(new MineLittleEmote());
 		modules.add(new InvSee());
+		modules.add(new FillyHandler());
+		modules.add(new AdminHandler());
+		modules.add(new Lockdown());
+		modules.add(new MiscCommands());
+		modules.add(new RainbowDash());
 	}
 
 	public void onDisable(){

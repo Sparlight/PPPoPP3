@@ -1,7 +1,7 @@
 name: PPPoPP3
 author: Coraline Kay
 main: me.corriekay.pppopp3.Mane
-version: 0.0.1
+version: 0.1.0
 commands:
   test:
     description: derp1
@@ -14,7 +14,7 @@ commands:
     permission: pppopp3.manuadd
   list:
     description: shows a list of online players
-    usage: /list
+    usage: /listplayer
     alises: [who, online]
     permission: pppopp3.list
   groupaddperm:
@@ -272,6 +272,100 @@ commands:
     usage: /cic <player>
     permission: pppopp3.cic
     aliases: [cic]
+  playerinformation:
+    description: displays information about a player
+    usage: /pi <player>
+    aliases: [pi]
+    permission: pppopp3.pi
+  rcv:
+    description: Uses the royal canterlot voice
+    usage: /rcv <message>
+    permission: pppopp3.rcv
+  j:
+    description: jumps to the target location
+    usage: /j
+    permission: pppopp3.j
+  tploc:
+    description: teleports to the target location
+    usage: /tploc x [y] z
+    permission: pppopp3.tploc
+  runcustomtask:
+    description: runs a custom configuration converter tool
+    usage: /runcustomtask
+    permission: pppopp3.rct
+  mobtype:
+    description: checks a mobspawners mobtype
+    usage: /mobtype <aim at mobspawner>
+    permission: pppopp3.mobtype
+  extinguish:
+    description: extinguishes fires in a cube radius around you
+    usage: /extinguish [x] [y] [z]
+    permission: pppopp3.extinguish
+    aliases: [ext]
+  spawnmob:
+    description: spawns mobs
+    usage: /spawnmob <mobtype> [number] Or /spawmobtarget <mobtype> <player> [number]
+    permission: pppopp3.spawnmob
+    aliases: [spawnmobtarget]
+  killmob: 
+    description: kills specific mobtypes in a radius
+    usage: /killmob <type> [radius]
+    permission: pppopp3.killmob
+  heal:
+    description: heals a user
+    usage: /heal [player]
+    permission: pppopp3.heal
+  sudo:
+    description: forces a player to make a command
+    usage: /sudo <player> <command>
+    permission: pppopp3.sudo
+  roundup:
+    description: easy way for rounding up mobs
+    usage: /roundup
+    permission: pppopp3.roundup
+  viewenderchest:
+    description: view a players enderchest
+    usage: /viewenderchest <player>
+    permission: pppopp3.viewenderchest
+    aliases: [vec]
+  fullrollback:
+    description: erases a players items, inventory, everything
+    usage: /fullrollback <player>
+    permission: pppopp3.fullrollback
+  lockdown:
+    description: accesses lockdown
+    usage: /lockdown
+    permission: pppopp3.lockdown
+  nick:
+    description: sets your nickname
+    usage: /nick <nickname>
+    permission: pppopp3.nickname
+    aliases: [nickname, setname]
+  reloadnicks:
+    description: reloads nicknames from file
+    usage: /reloadnicks
+    permission: pppopp3.reloadnicks
+  whopony:
+    description: sees the username of a player
+    usage: /whopony <displayname>
+    permission: pppopp3.whopony
+  clearinventory:
+    description: clears your inventory
+    usage: /clearinventory
+    permission: pppopp3.clearinventory
+  weather:
+    description: alters the weather
+    usage: /weather
+    permission: pppopp3.weather
+    aliases: [sun,storm,rain,day,night,changetime]
+  zeus:
+    description: toggles zeus mode
+    usage: /zeus
+    permission: pppopp3.zeus
+  time:
+    description: gets the world time
+    usage: /time
+    permission: pppopp3.time
 permissions:
   pppopp3.pm.alertgroupchange:
     description: sends messages to players alerting to group changes
