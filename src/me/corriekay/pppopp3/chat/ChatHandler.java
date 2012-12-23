@@ -163,14 +163,34 @@ public class ChatHandler extends PSCmdExe{
 				}
 				channel.broadcastToChannel("Server", "Server", message, true);
 				return true;
+			} else {
+				Player player = (Player)sender;
+				if(label.equals("channel")) {
+					String chans = "";
+					for(String s : channels.keySet()) {
+						chans += " " + channels.get(s).color() + s;
+					}
+					sendMessage(player, "heres a list of the channels!:" + chans);
+					return true;
+				} else {
+					Channel chan = getChannel(label);
+					if(chan == null) {
+						sendMessage(player, ">_o wat. Channel not found! D:");
+						return true;
+					} else {
+						if(chan.isListening(player)) {
+							String msg = "";
+							for(String word : args) {
+								msg += word + " ";
+							}
+							chan.broadcastToChannel(player.getDisplayName(), player.getName(), msg, true);
+							return true;
+						}
+						sendMessage(player, "Youre not in that channel, please join the channel first!");
+						return true;
+					}
+				}
 			}
-			Player player = (Player)sender;
-			String chans = "";
-			for(String s : channels.keySet()) {
-				chans += " " + channels.get(s).color() + s;
-			}
-			sendMessage(player, "heres a list of the channels!:" + chans);
-			return true;
 		}
 		Player player;
 		if(sender instanceof Player) {
@@ -290,28 +310,7 @@ public class ChatHandler extends PSCmdExe{
 			updateChannels(player);
 			return true;
 		}
-		if(cmd.getName().equals("channel")) {
-			if(label.equals("channel")) {
-				return true;
-			} else {
-				Channel chan = getChannel(label);
-				if(chan == null) {
-					sendMessage(player, ">_o wat. Channel not found! D:");
-					return true;
-				} else {
-					if(chan.isListening(player)) {
-						String msg = "";
-						for(String word : args) {
-							msg += word + " ";
-						}
-						chan.broadcastToChannel(player.getDisplayName(), player.getName(), msg, true);
-						return true;
-					}
-					sendMessage(player, "Youre not in that channel, please join the channel first!");
-					return true;
-				}
-			}
-		}
+		if(cmd.getName().equals("channel")) {}
 		if(cmd.getName().equals("pm")) {
 			if(args.length < 2) {
 				sendMessage(player, notEnoughArgs);
