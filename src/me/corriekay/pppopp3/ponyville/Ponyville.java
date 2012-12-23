@@ -130,4 +130,12 @@ public final class Ponyville extends PSCmdExe{
 		p.save();
 		removePony(event.getPlayer());
 	}
+
+	public void deactivate(){
+		for(Player player : Bukkit.getOnlinePlayers()) {
+			Pony pony = Ponyville.getPony(player);
+			pony.setInventory(player.getInventory(), player.getWorld().getName());
+			pony.save();
+		}
+	}
 }
