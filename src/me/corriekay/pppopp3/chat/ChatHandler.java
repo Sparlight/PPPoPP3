@@ -451,11 +451,8 @@ public class ChatHandler extends PSCmdExe{
 	private void updateChannels(Player player){
 		Pony pony = Ponyville.getPony(player);
 		Channel chan = chatting.get(player.getName());
-		if(chan == null) {
-			pony.setChatChannel("null");
-		} else {
+		if(chan != null) {
 			pony.setChatChannel(chan.getName());
-			System.out.println("setting chat channel to " + chan.getName());
 		}
 		HashSet<String> channels = new HashSet<String>();
 		for(Channel chann : getListeningChannels(player)) {

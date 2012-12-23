@@ -38,7 +38,7 @@ public class MiscCommands extends PSCmdExe{
 			}
 			nickname = nickname.substring(0, nickname.length() - 1);
 			nickname = nickname.replace("&k", "");
-			if(!player.hasPermission("pppopp2.formattednickname")) {
+			if(!player.hasPermission("pppopp3.formattednickname")) {
 				nickname = nickname.replace("&l", "").replace("&m", "").replace("&n", "").replace("&o", "").replace("&0", "").replace("&1", "");
 			}
 			nickname = nickname.replaceAll("[^(a-zA-Z0-9 !?.&~)]", "");

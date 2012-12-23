@@ -202,14 +202,14 @@ public class AntiDiscordModule extends PSCmdExe{
 
 	@EventHandler
 	public void blockBreak(BlockBreakEvent event){
-		if(isProtected(event.getBlock().getLocation())) {
+		if(isProtected(event.getBlock().getLocation()) && !event.getPlayer().hasPermission("pppopp3.protectionsbypass")) {
 			event.setCancelled(true);
 		}
 	}
 
 	@EventHandler
 	public void blockPlace(BlockPlaceEvent event){
-		if(isProtected(event.getBlock().getLocation())) {
+		if(isProtected(event.getBlock().getLocation()) && !event.getPlayer().hasPermission("pppopp3.protectionsbypass")) {
 			event.setCancelled(true);
 		}
 	}

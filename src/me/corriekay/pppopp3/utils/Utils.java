@@ -7,11 +7,14 @@ package me.corriekay.pppopp3.utils;
  */
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 
 public abstract class Utils{
@@ -73,5 +76,28 @@ public abstract class Utils{
 			blocks.add(loc2.getBlock());
 		}
 		return blocks;
+	}
+
+	public static Location getLoc(ArrayList<String> array){
+		if(array == null) {
+			return null;
+		}
+		try {
+			World w;
+			double x, y, z;
+			float pitch, yaw;
+			w = Bukkit.getWorld(array.get(0));
+			x = Double.parseDouble(array.get(1));
+			y = Double.parseDouble(array.get(2));
+			z = Double.parseDouble(array.get(3));
+			pitch = Float.parseFloat(array.get(4));
+			yaw = Float.parseFloat(array.get(5));
+			Location l = new Location(w, x, y, z);
+			l.setPitch(pitch);
+			l.setYaw(yaw);
+			return l;
+		} catch(Exception e) {
+			return null;
+		}
 	}
 }

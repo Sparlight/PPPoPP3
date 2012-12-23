@@ -14,6 +14,7 @@ import me.corriekay.pppopp3.utils.PSCmdExe;
 import me.corriekay.pppopp3.warp.WarpHandler;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -36,7 +37,11 @@ public class Mane extends JavaPlugin{
 		modules.add(new Ponyville());
 		modules.add(new PonyManager());
 		modules.add(new BanHammer());
-		modules.add(new InvisibilityHandler());
+		try {
+			modules.add(new InvisibilityHandler());
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
 		modules.add(new AfkHandler());
 		modules.add(new RemoteChest());
 		try {
@@ -76,6 +81,12 @@ public class Mane extends JavaPlugin{
 		modules.add(new Lockdown());
 		modules.add(new MiscCommands());
 		modules.add(new RainbowDash());
+		modules.add(new GodHandler());
+		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
+			public void run(){
+				Bukkit.broadcastMessage(ChatColor.DARK_RED + "ATTENTION: This server is unstable! We are in the process of testing new code for the server. Please keep calm, and report any bugs you find at this link: http://mlpf.im/PPPoPP3 Please bear with us as there will be random server reboots, restarts, and even rollbacks. I appreciate your cooperation!");
+			}
+		}, 0, 30 * 60 * 20);
 	}
 
 	public void onDisable(){

@@ -240,6 +240,10 @@ public class BanHammer extends PSCmdExe{
 
 	@EventHandler (priority = EventPriority.MONITOR)
 	public void onDeny(PlayerLoginEvent event){
+		if(event.getResult() == Result.KICK_WHITELIST) {
+			event.setKickMessage("The server is unavailable right now! Please join again later!");
+			return;
+		}
 		if(event.getPlayer().isBanned()) {
 			Pony pony = Ponyville.getOfflinePony(event.getPlayer());
 			if(pony == null) {

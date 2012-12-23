@@ -43,7 +43,7 @@ public class RainbowDash extends PSCmdExe{
 			}
 			return true;
 		}
-		if(cmd.getName().equals("changetime")) {
+		if(cmd.getName().equals("time")) {
 			World world;
 			if(args.length > 0) {
 				world = Bukkit.getServer().getWorld(args[0]);
@@ -126,9 +126,11 @@ public class RainbowDash extends PSCmdExe{
 	@EventHandler
 	public void weatherChange(WeatherChangeEvent event){
 		if(event.getWorld().getName().equals("equestria")) {
-			event.setCancelled(true);
-			event.getWorld().setStorm(false);
-			event.getWorld().setThundering(false);
+			if(event.toWeatherState()) {
+				event.setCancelled(true);
+				event.getWorld().setStorm(false);
+				event.getWorld().setThundering(false);
+			}
 		}
 	}
 
