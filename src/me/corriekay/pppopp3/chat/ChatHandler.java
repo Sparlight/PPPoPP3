@@ -384,12 +384,13 @@ public class ChatHandler extends PSCmdExe{
 				sendMessage(player, "Uh oh, you cant modify that channel!");
 				return true;
 			}
-			if(args[0].equals("default")) {
-				color = chan.cc;
-			} else {
-				color = ChatColor.valueOf(args[0].toUpperCase());
-			}
-			if(color == null) {
+			try {
+				if(args[0].equals("default")) {
+					color = chan.cc;
+				} else {
+					color = ChatColor.valueOf(args[0].toUpperCase());
+				}
+			} catch(Exception e) {
 				sendMessage(player, "Color not found!");
 				return true;
 			}
