@@ -195,12 +195,16 @@ public class WarpHandler extends PSCmdExe{
 			return true;
 		}
 		if(cmd.getName().equals("spawn")) {
-			queueWarp(player, spawns.get(Equestria.get().getParentWorld(player.getWorld())));
+			World w = player.getWorld();
+			if(args.length > 0) {
+				w = Bukkit.getWorld(args[0]);
+			}
+			w = Equestria.get().getParentWorld(w);
+			queueWarp(player, spawns.get(w));
 			return true;
 		}
 		if(cmd.getName().equals("setspawn")) {
 			World w = player.getWorld();
-
 			if(w.getEnvironment() != Environment.NORMAL) {
 				sendMessage(player, "The spawn is located in the overworld silly!");
 				return true;
@@ -459,7 +463,12 @@ public class WarpHandler extends PSCmdExe{
 			sendMessage(player, "Using the express admin wormhole!");
 			return;
 		}
-		warpQueues.put(player.getName(), new QueuedWarp(player.getName(), loc, 7));
+		try {
+			warpQueues.put(player.getName(), new QueuedWarp(player.getName(), loc, 7));
+		} catch(Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		sendMessage(player, "Okay! setting up the wormhole... This process is delicate...");
 	}
 

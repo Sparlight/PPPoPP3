@@ -30,12 +30,12 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.UUID;
 
-import net.minecraft.server.v1_4_5.*;
+import net.minecraft.server.v1_4_6.*;
 
 import org.bukkit.*;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_4_5.inventory.CraftInventory;
-import org.bukkit.craftbukkit.v1_4_5.inventory.CraftInventoryPlayer;
+import org.bukkit.craftbukkit.v1_4_6.inventory.CraftInventory;
+import org.bukkit.craftbukkit.v1_4_6.inventory.CraftInventoryPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.potion.PotionEffect;
@@ -67,7 +67,7 @@ public class IOP{
 	private boolean loadPlayerData(String name){
 		try {
 			this.player = name;
-			for(World w : Bukkit.getWorlds()) {
+			for(org.bukkit.World w : Bukkit.getWorlds()) {
 				this.file = new File(w.getWorldFolder(), "players" + File.separator + this.player + ".dat");
 				if(this.file.exists()) {
 					this.compound = NBTCompressedStreamTools.a(new FileInputStream(this.file));

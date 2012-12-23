@@ -13,6 +13,7 @@ import me.corriekay.pppopp3.utils.PSCmdExe;
 import me.corriekay.pppopp3.utils.Utils;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -105,6 +106,7 @@ public final class Ponyville extends PSCmdExe{
 		Pony.getWorldStats(pl, pl.getWorld().getName());
 		Bukkit.getPluginManager().callEvent(je);
 		event.setJoinMessage(je.getMsg());
+		pl.sendMessage(ChatColor.DARK_RED + "ATTENTION: This server is unstable! We are in the process of testing new code for the server. Please keep calm, and report any bugs you find at this link: http://mlpf.im/PPPoPP3 Please bear with us as there will be random server reboots, restarts, and even rollbacks. I appreciate your cooperation!");
 	}
 
 	@EventHandler

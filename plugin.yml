@@ -1,7 +1,7 @@
 name: PPPoPP3
 author: Coraline Kay
 main: me.corriekay.pppopp3.Mane
-version: 0.1.0
+version: 0.1.2
 commands:
   test:
     description: derp1
@@ -366,6 +366,16 @@ commands:
     description: gets the world time
     usage: /time
     permission: pppopp3.time
+  gm:
+    description: changes game mode
+    usage: /gm
+    permission: pppopp3.gm
+    aliases: [gamemode]
+  god:
+    description: toggles god mode
+    usage: /celestia
+    permission: pppopp3.celestia
+    aliases: [celestia]
 permissions:
   pppopp3.pm.alertgroupchange:
     description: sends messages to players alerting to group changes
@@ -387,4 +397,10 @@ permissions:
     default: false
   pppopp3.tpbypass:
     description: bypasses teleport cooldown
+    default: false
+  pppopp3.formattednickname:
+    description: bypasses format deletion for nicknames
+    default: false
+  pppopp3.protectionsbypass:
+    description: allows moderators to bypass spawn protections
     default: false

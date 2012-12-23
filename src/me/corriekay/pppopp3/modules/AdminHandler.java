@@ -1,6 +1,7 @@
 package me.corriekay.pppopp3.modules;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -22,6 +23,8 @@ import org.bukkit.block.CreatureSpawner;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -36,6 +39,14 @@ public class AdminHandler extends PSCmdExe{
 
 	public AdminHandler(){
 		super("AdminHandler", "viewenderchest", "playerinformation", "rcv", "j", "tploc", "runcustomtask", "mobtype", "extinguish", "spawnmob", "killmob", "heal", "sudo", "roundup", "fullrollback");
+	}
+
+	private HashSet<String> convertArrayString(List<String> array){
+		HashSet<String> set = new HashSet<String>();
+		for(String s : array) {
+			set.add(s);
+		}
+		return set;
 	}
 
 	public boolean handleCommand(final CommandSender sender, Command cmd, String label, String[] args){
@@ -75,7 +86,7 @@ public class AdminHandler extends PSCmdExe{
 		if(cmd.getName().equals("runcustomtask")) {
 			Bukkit.getScheduler().runTaskAsynchronously(Mane.getInstance(), new Runnable() {
 				public void run(){
-					File dir = new File(Mane.getInstance().getDataFolder() + File.separator + "Players");
+					File dir = new File(Mane.getInstance().getDataFolder() + File.separator + "Old Players");
 					int errors = 0;
 					int total = dir.listFiles().length + 1;
 					int current = 1;
@@ -88,14 +99,70 @@ public class AdminHandler extends PSCmdExe{
 						}
 						current++;
 						try {
-							Pony pony = new Pony(file);
+							FileConfiguration config = YamlConfiguration.loadConfiguration(file);
+							OfflinePlayer op = Bukkit.getOfflinePlayer(config.getName());
 							//CODE
-
-							//CODE
+							Pony pony = Pony.moveToPonyville(config.getString("name"), "", Bukkit.getOfflinePlayer(config.getName()).getFirstPlayed());
+							pony.setNickname(config.getString("nickname"));
+							pony.setMuted(config.getBoolean("muted"));
+							pony.setSilenced(convertArrayString(config.getStringList("silenced")));
+							pony.setGodMode(config.getBoolean("god"));
+							pony.setInvisible(config.getBoolean("invisible"));
+							pony.setNickHistory((ArrayList<String>)config.getStringList("nickHistory"));
+							pony.setChatChannel(config.getString("chatChannel"));
+							pony.setListenChannels(convertArrayString(config.getStringList("listenChannels")));
+							pony.setPonySpy(config.getBoolean("ponyspy"));
+							pony.setGroup(config.getString("group"));
+							pony.setPerms((ArrayList<String>)config.getStringList("perms"));
+							pony.setIps((ArrayList<String>)config.getStringList("ipAddress"));
+							pony.setHornLeft(config.getString("horn.left"));
+							pony.setHornRight(config.getString("horn.right"));
+							pony.setHornOn(config.getBoolean("horn.isOn"));
+							pony.setEmoteName(config.getString("emote.name"));
+							pony.setEmoteSender(config.getString("emote.sender"));
+							pony.setEmoteReceiver(config.getString("emote.receiver"));
+							pony.setEmoteServer(config.getString("emote.server"));
+							pony.setEmotePrivate(config.getBoolean("emote.private"));
+							pony.setEmoteSilent(config.getBoolean("emote.silent"));
+							pony.setFirstLogon(config.getString("firstLogon"));
+							pony.setLastLogon(config.getString("lastLogon"));
+							pony.setLastLogout(config.getString("lastLogout"));
+							pony.setHomeWarp(Utils.getLoc((ArrayList<String>)config.getStringList("warps.other.home")));
+							pony.setOfflineWarp(Utils.getLoc((ArrayList<String>)config.getStringList("warps.other.offline")));
+							pony.setBackWarp(Utils.getLoc((ArrayList<String>)config.getStringList("warps.other.back")));
+							for(String s : config.getConfigurationSection("warps").getKeys(false)) {
+								if(!s.equals("other")) {
+									pony.setNamedWarp(s, Utils.getLoc((ArrayList<String>)config.getStringList("warps." + s)));
+								}
+							}
+							pony.setBanned(config.getBoolean("ban.banned"));
+							if(pony.isBanned()) {
+								pony.setBanType(config.getString("ban.banType").equals("permaban") ? 2 : 1);
+							} else {
+								pony.setBanType(0);
+							}
+							if(pony.getBanType() == 0 && op.isBanned()) {
+								Mane.getInstance().getLogger().severe("ALERT, PLAYER CONFIGURATION DESYNCHRONIZED FROM BAN LIST: " + op.getName());
+							}
+							pony.setUnbanTime(config.getLong("ban.unbanTime", 0));
+							pony.setNotes((ArrayList<String>)config.getStringList("notes"));
 							pony.save();
+							try {
+								IOP ponyOP = new IOP(pony.getName());
+								if(ponyOP.exists()) {
+									Pony.setWorldStats(ponyOP, pony, "world");
+									pony.setInventory(ponyOP.getInventory(), "world");
+								}
+
+							} catch(Exception e) {
+								e.printStackTrace();
+							}
+							pony.save();
+							//CODE
 						} catch(Exception e) {
 							errors++;
 							Mane.getInstance().getLogger().severe("Error on parsing config: " + file.getName());
+							e.printStackTrace();
 						}
 					}
 					sendMessage(sender, "Configs converted! " + errors + " errors!");

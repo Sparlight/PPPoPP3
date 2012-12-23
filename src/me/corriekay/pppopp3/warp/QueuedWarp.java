@@ -16,7 +16,10 @@ public class QueuedWarp{
 	private Location teleport;
 	private int countdown;
 
-	public QueuedWarp(String player, Location teleport, int countdown){
+	public QueuedWarp(String player, Location teleport, int countdown) throws Exception{
+		if(teleport == null) {
+			throw new Exception();
+		}
 		this.player = player;
 		this.teleport = teleport;
 		this.countdown = countdown;

@@ -8,13 +8,14 @@ import java.util.HashSet;
 
 import me.corriekay.pppopp3.Mane;
 import me.corriekay.pppopp3.modules.Equestria;
+import me.corriekay.pppopp3.utils.IOP;
 import me.corriekay.pppopp3.utils.Utils;
-import net.minecraft.server.v1_4_5.*;
+import net.minecraft.server.v1_4_6.*;
 
 import org.bukkit.*;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_4_5.inventory.CraftInventoryPlayer;
-import org.bukkit.craftbukkit.v1_4_5.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_4_6.inventory.CraftInventoryPlayer;
+import org.bukkit.craftbukkit.v1_4_6.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.potion.PotionEffect;
@@ -23,7 +24,7 @@ import org.bukkit.potion.PotionEffectType;
 public class Pony{
 
 	private final File datFile;
-	private final NBTTagCompound c;
+	public final NBTTagCompound c;
 	private HashMap<String,Inventory> remoteChests = new HashMap<String,Inventory>();
 	private HashMap<Inventory,String> rcWorlds = new HashMap<Inventory,String>();
 	private OfflinePlayer op;
@@ -504,6 +505,41 @@ public class Pony{
 
 	}
 
+	public static void setWorldStats(IOP p, Pony pony, String worldName){
+		NBTTagCompound compound = new NBTTagCompound();
+
+		//potion effects
+		NBTTagList effectList = new NBTTagList();
+		ArrayList<PotionEffect> effects = (ArrayList<PotionEffect>)p.getPotionEffects();
+		for(PotionEffect pe : effects) {
+			NBTTagCompound eCompound = new NBTTagCompound();
+			eCompound.setByte("Amplifier", (byte)(pe.getAmplifier()));
+			eCompound.setByte("Id", (byte)(pe.getType().getId()));
+			eCompound.setInt("Duration", (int)(pe.getDuration()));
+			effectList.add(eCompound);
+		}
+		compound.set("potioneffects", effectList);
+
+		//hunger, health, saturation, etc.
+		float exhaustion, exp, saturation;
+		int foodlvl, health, level, totalxp;
+		exhaustion = p.getExhaustion();
+		exp = p.getExp();
+		saturation = p.getSaturation();
+		foodlvl = p.getFoodLevel();
+		health = p.getHealth();
+		level = p.getLevel();
+		totalxp = p.getTotalExperience();
+		compound.setFloat("exhaustion", exhaustion);
+		compound.setFloat("exp", exp);
+		compound.setFloat("saturation", saturation);
+		compound.setInt("foodlvl", foodlvl);
+		compound.setInt("health", health);
+		compound.setInt("level", level);
+		compound.setInt("totalxp", totalxp);
+		pony.c.getCompound("worlds").set(worldName, compound);
+	}
+
 	public void saveRemoteChest(World w){
 		if(w == null) {
 			System.out.println("WARNING WORLD IS NULL! player: " + getPlayer().getName());
@@ -614,7 +650,7 @@ public class Pony{
 		getBans().set("unbantime", new NBTTagLong("unbantime", arg));
 	}
 
-	private void setNotes(ArrayList<String> set){
+	public void setNotes(ArrayList<String> set){
 		c.set("notes", getList(set));
 	}
 
@@ -663,11 +699,16 @@ public class Pony{
 	}
 
 	public static Pony moveToPonyville(Player pone){
-		File datFile = new File(Mane.getInstance().getDataFolder() + File.separator + "Players", pone.getName());
+		return moveToPonyville(pone.getName(), getIp(pone), pone.getFirstPlayed());
+	}
+
+	public static Pony moveToPonyville(String pone, String ip, long firstPlayed){
+		File datFile = new File(Mane.getInstance().getDataFolder() + File.separator + "Players", pone);
 		if(datFile.exists()) {
 			try {
 				return new Pony(pone);
 			} catch(Exception e) {
+				e.printStackTrace();
 				//TODO print error to Pony Logger
 				return null;
 			}
@@ -680,24 +721,24 @@ public class Pony{
 		}
 		NBTTagCompound c = new NBTTagCompound();
 		//set basics
-		c.set("name", new NBTTagString("name", pone.getName()));
+		c.set("name", new NBTTagString("name", pone));
 		c.set("muted", new NBTTagByte("muted", (byte)0));
 		c.set("silenced", new NBTTagList());
 		c.set("god", new NBTTagByte("god", (byte)0));
 		c.set("invisible", new NBTTagByte("invisible", (byte)0));
-		c.set("nickname", new NBTTagString("nickname", pone.getName()));
-		c.set("nickHistory", new NBTTagList());
+		c.set("nickname", new NBTTagString("nickname", pone));
+		c.set("nickhistory", new NBTTagList());
 		c.set("chatchannel", new NBTTagString("chatchannel", "equestria"));
 		c.set("channelcolors", new NBTTagCompound());
 		NBTTagList lc = new NBTTagList();
 		lc.add(new NBTTagString("channel", "equestria"));
-		c.set("listenChannels", lc);
+		c.set("listenchannels", lc);
 		c.set("ponyspy", new NBTTagByte("ponyspy", (byte)0));
 		c.set("group", new NBTTagString("group", "filly"));
 		c.set("perms", new NBTTagList());
-		NBTTagList ip = new NBTTagList();
-		ip.add(new NBTTagString("ip", getIp(pone)));
-		c.set("ipaddress", ip);
+		NBTTagList ips = new NBTTagList();
+		ips.add(new NBTTagString("ip", ip));
+		c.set("ipaddress", ips);
 
 		//Horn
 		NBTTagCompound horn = new NBTTagCompound();
@@ -729,7 +770,7 @@ public class Pony{
 		c.set("emote", emote);
 
 		//login
-		c.set("firstlogon", new NBTTagString("firstlogon", Utils.getDate(pone.getFirstPlayed())));
+		c.set("firstlogon", new NBTTagString("firstlogon", Utils.getDate(firstPlayed)));
 		c.set("lastlogon", new NBTTagString("lastlogon", "n/a"));
 		c.set("lastlogout", new NBTTagString("lastlogout", "n/a"));
 
@@ -756,7 +797,6 @@ public class Pony{
 
 		//save
 		try {
-			System.out.println("saving file");
 			NBTCompressedStreamTools.a(c, new FileOutputStream(datFile));
 		} catch(Exception e) {
 			return null;

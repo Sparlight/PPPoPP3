@@ -1,6 +1,6 @@
 package me.corriekay.pppopp3.events;
 
-import net.minecraft.server.v1_4_5.Packet3Chat;
+import net.minecraft.server.v1_4_6.Packet3Chat;
 
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;

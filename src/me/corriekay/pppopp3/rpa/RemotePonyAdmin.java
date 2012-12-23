@@ -57,7 +57,7 @@ public class RemotePonyAdmin extends PSCmdExe{
 			Log.NONE();
 		}
 		port = config.getInt("port", 25566);
-		server = new Server();
+		server = new Server(100000000, 100000000);
 		PacketUtils.registerServerPackets(server);
 		server.start();
 		server.bind(port);
