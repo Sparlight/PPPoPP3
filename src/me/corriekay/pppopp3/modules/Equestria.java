@@ -11,8 +11,6 @@ import me.corriekay.pppopp3.utils.PSCmdExe;
 import org.bukkit.*;
 import org.bukkit.World.Environment;
 import org.bukkit.block.Block;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -34,7 +32,7 @@ public class Equestria extends PSCmdExe{
 	private static Equestria e;
 
 	public Equestria() throws Exception{
-		super("Equestria", "test");
+		super("Equestria");
 		e = this;
 		FileConfiguration worldconfig = getNamedConfig("equestria.yml");
 		for(String world : worldconfig.getConfigurationSection("worldconfig").getKeys(false)) {
@@ -184,12 +182,6 @@ public class Equestria extends PSCmdExe{
 				event.setCancelled(true);
 			}
 		}
-	}
-
-	public boolean handleCommand(CommandSender sender, Command cmd, String label, String[] args){
-		World w = Bukkit.getWorld(args[0]);
-		((Player)sender).teleport(w.getSpawnLocation());
-		return true;
 	}
 
 	public static Equestria get(){

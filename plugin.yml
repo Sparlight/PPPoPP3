@@ -3,8 +3,6 @@ author: Coraline Kay
 main: me.corriekay.pppopp3.Mane
 version: 0.1.2
 commands:
-  test:
-    description: derp1
   testperm:
     description: tests permission for a player
   setgroup:
@@ -376,6 +374,10 @@ commands:
     usage: /celestia
     permission: pppopp3.celestia
     aliases: [celestia]
+  gethandbook:
+    description: gives the user a filly handbook.
+    usage: /gethandbook
+    permission: pppopp3.handbook
 permissions:
   pppopp3.pm.alertgroupchange:
     description: sends messages to players alerting to group changes
