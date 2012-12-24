@@ -1,10 +1,10 @@
 name: PPPoPP3
 author: Coraline Kay
 main: me.corriekay.pppopp3.Mane
-version: 0.0.1
+version: 0.1.4
 commands:
-  test:
-    description: derp1
+  testperm:
+    description: tests permission for a player
   setgroup:
     description: changes a players group
     usage: /setgroup <player> <group>
@@ -12,7 +12,7 @@ commands:
     permission: pppopp3.manuadd
   list:
     description: shows a list of online players
-    usage: /list
+    usage: /listplayer
     alises: [who, online]
     permission: pppopp3.list
   groupaddperm:
@@ -49,7 +49,360 @@ commands:
     description: finds the deaths of mobs in a radius around you
     usage: /finddeaths <radius> <type> <days>
     permission: pppopp3.finddeaths
+  claimplot:
+    description: registers an area for private creative use
+    usage: /claimplot
+    permissions: pppopp3.claimplot
+  releaseplot:
+    description: unregisters an area
+    usage: /releaseplot
+    permissions: pppopp3.releaseplot
+  join:
+    description: used to join a channel
+    usage: /join <channel>
+    permission: pppopp3.channel
+    aliases: [ch, focus]
+  leave:
+    description: used to leave a channel
+    usage: /leave <channel>
+    permission: pppopp3.channel
+  channel:
+    description: lists channels, and allows a user to send a quick message to another channel without joining it
+    usage: /channel or /<quick> <message>
+    permission: pppopp3.channel
+    aliases: [eq, equestria, d, donator, rp, roleplay, staff, ssss, nsfw]
+  say:
+    description: send message from the console
+    usage: /say <message>
+    permission: pppopp3.say
+  me:
+    description: sends a basic emote to the channel youre in
+    usage: /me <emote>
+    permission: pppopp3.me
+  mute:
+    description: mutes/unmutes a player
+    usage: /mute <player>
+    permission: pppopp3.channel
+  pm:
+    description: privately messages another player
+    usage: /pm <player> <message>
+    permission: pppopp3.pm
+    aliases: [tell, msg, whisper]
+  r:
+    description: replies to the last user to pm you
+    usage: /r <message>
+    permission: pppopp3.pm
+  silence:
+    description: silence or unsilence someone
+    usage: /silence <name>
+    permission: pppopp3.silence
+  silenced:
+    description: lists the silenced players for a user
+    usage: /silenced
+    permission: pppopp3.silence
+  channelcolor:
+    description: sets a channel to a custom color
+    usage: /channelcolor <color> [channel]
+    permission: pppopp3.channel
+    aliases: [cc]
+  ponyspy:
+    description: enables ponyspy
+    usage: /ponyspy
+    permission: pppopp3.ponyspy
+    aliases: [ps]
+  toggle:
+    description: toggles protections
+    usage: /toggle <water|lava|pvp>
+    permission: pppopp3.toggleprot
+  afk:
+    description: toggles manual afk systems
+    usage: /afk
+    permission: pppopp3.afk
+  hide:
+    description: vanishes from the server
+    usage: /hide
+    permission: pppopp3.hide
+    aliases: [fakehide]
+  nopickup:
+    description: toggles nopickup
+    usage: /nopickup
+    permission: pppopp3.nopickup
+    aliases: [np]
+  ban:
+    description: bans a user
+    usage: /ban <player> <reason>
+    aliases: [banana]
+    permission: pppopp3.ban
+  kick:
+    description: kicks a player
+    usage: /kick <player> <reason>
+    permission: pppopp3.kick
+  tempban:
+    description: temporarily ban a user
+    usage: /tempban <user> <time in hours> <reason>
+    permission: pppopp3.ban
+  unban:
+    description: Unbans a player
+    usage: /unban <player>
+    permission: pppopp3.ban
+  notes:
+    description: reads notes about a player
+    usage: /notes <player> (read)
+    permission: pppopp3.notes
+  createnote:
+    description: writes a note about a player
+    usage: /createnote <player> <note>
+    permission: pppopp3.notes
+  pw:
+    description: teleports to a private warp
+    usage: /pw <warp>
+    permission: pppopp3.pw
+  pwlist:
+    description: lists all warps
+    usage: /pwlist
+    permission: pppopp3.pwlist
+  pwdel:
+    description: deletes a private warp
+    usage: /pwdel <warp>
+    permission: pppopp3.pw
+  pwset:
+    description: sets a private warp
+    usage: /pwset <warp>
+    permission: pppopp3.pw
+  gw:
+    description: teleports to a global warp
+    usage: /gw <warp>
+    permission: pppopp3.gw
+  gwset:
+    description: sets a global warp
+    usage: /gwset <warp>
+    permission: pppopp3.gwset
+  gwdel:
+    description: deletes a global warp
+    usage: /gwdel <warp>
+    permission: pppopp3.gwset
+  pwplayer:
+    description: mod base command for dealing with other player warps
+    usage: /pwplayer <player> <params>
+    permission: pppopp3.pwplayer
+  tp:
+    description: requests teleport to a player
+    usage: /tp <player>
+    permission: pppopp3.tp
+  tpa:
+    description: accepts a teleport request
+    usage: /tpa
+    permission: pppopp3.tp
+  tpd:
+    description: denies a teleport request
+    usage: /tpd
+    permission: pppopp3.tp
+  tphere:
+    description: admin command, teleports a user to you
+    usage: /tphere <player>
+    permission: pppopp3.tphere
+  home:
+    description: teleports home
+    usage: /home
+    permission: pppopp3.home
+  sethome:
+    description: sets your home
+    usage: /sethome
+    permission: pppopp3.home
+  back:
+    description: teleports back
+    usage: /back
+    permission: pppopp3.back
+  spawn:
+    description: teleports to the spawn
+    usage: /spawn
+    permission: pppopp3.spawn
+  setspawn:
+    description: sets the spawn
+    usage: /setspawn
+    permission: pppopp3.setspawn
+  top:
+    description: teleports a player to the top block in their collumn
+    usage: /top
+    permission: pppopp3.top
+  alert:
+    description: Alerts an OPony that they are needed on the server!
+    usage: /alert
+    permission: pppopp3.alert
+  setpassword:
+    description: set your RPA password. passwords are stored hashed in your player file.
+    usage: /setpassword password
+    permission: pppopp3.rpasetpw
+  rpadebug:
+    description: sets the debug status for the RPA Server
+    usage: /rpadebug <true|false>
+    permission: pppopp3.rpadebug
+  horn:
+    description: unicorn horn
+    usage: /horn <<on|off>/<left|right> <command>>
+    permission: pppopp3.unicornhorn
+  mle:
+    description: lists emotes
+    usage: /mle
+    permission: pppopp3.mle
+  mles:
+    description: activates the set emote module. Will walk players through setting their emote.
+    usage: /mles
+    permission: pppopp3.mles
+  mee:
+    description: utilizes an emote
+    usage: /mee <emote> <target>
+    permission: pppopp3.mle
+  deleteemote:
+    description: deletes your emote permenantly and removes it from the server
+    usage: /deleteemote
+    permission: pppopp3.mles
+  mleban:
+    description: bans a player from mle
+    usage: /mleban <playername>
+    permission: pppopp3.mleban
+  invsee:
+    description: sees an inventory
+    usage: /invsee <player>
+    permission: pppopp3.invsee
+  commitinventorychange:
+    description: commits a change to an offline player
+    usage: /cic <player>
+    permission: pppopp3.cic
+    aliases: [cic]
+  playerinformation:
+    description: displays information about a player
+    usage: /pi <player>
+    aliases: [pi]
+    permission: pppopp3.pi
+  rcv:
+    description: Uses the royal canterlot voice
+    usage: /rcv <message>
+    permission: pppopp3.rcv
+  j:
+    description: jumps to the target location
+    usage: /j
+    permission: pppopp3.j
+  tploc:
+    description: teleports to the target location
+    usage: /tploc x [y] z
+    permission: pppopp3.tploc
+  runcustomtask:
+    description: runs a custom configuration converter tool
+    usage: /runcustomtask
+    permission: pppopp3.rct
+  mobtype:
+    description: checks a mobspawners mobtype
+    usage: /mobtype <aim at mobspawner>
+    permission: pppopp3.mobtype
+  extinguish:
+    description: extinguishes fires in a cube radius around you
+    usage: /extinguish [x] [y] [z]
+    permission: pppopp3.extinguish
+    aliases: [ext]
+  spawnmob:
+    description: spawns mobs
+    usage: /spawnmob <mobtype> [number] Or /spawmobtarget <mobtype> <player> [number]
+    permission: pppopp3.spawnmob
+    aliases: [spawnmobtarget]
+  killmob: 
+    description: kills specific mobtypes in a radius
+    usage: /killmob <type> [radius]
+    permission: pppopp3.killmob
+  heal:
+    description: heals a user
+    usage: /heal [player]
+    permission: pppopp3.heal
+  sudo:
+    description: forces a player to make a command
+    usage: /sudo <player> <command>
+    permission: pppopp3.sudo
+  roundup:
+    description: easy way for rounding up mobs
+    usage: /roundup
+    permission: pppopp3.roundup
+  viewenderchest:
+    description: view a players enderchest
+    usage: /viewenderchest <player>
+    permission: pppopp3.viewenderchest
+    aliases: [vec]
+  fullrollback:
+    description: erases a players items, inventory, everything
+    usage: /fullrollback <player>
+    permission: pppopp3.fullrollback
+  lockdown:
+    description: accesses lockdown
+    usage: /lockdown
+    permission: pppopp3.lockdown
+  nick:
+    description: sets your nickname
+    usage: /nick <nickname>
+    permission: pppopp3.nickname
+    aliases: [nickname, setname]
+  reloadnicks:
+    description: reloads nicknames from file
+    usage: /reloadnicks
+    permission: pppopp3.reloadnicks
+  whopony:
+    description: sees the username of a player
+    usage: /whopony <displayname>
+    permission: pppopp3.whopony
+  clearinventory:
+    description: clears your inventory
+    usage: /clearinventory
+    permission: pppopp3.clearinventory
+  weather:
+    description: alters the weather
+    usage: /weather
+    permission: pppopp3.weather
+    aliases: [sun,storm,rain,day,night,changetime]
+  zeus:
+    description: toggles zeus mode
+    usage: /zeus
+    permission: pppopp3.zeus
+  time:
+    description: gets the world time
+    usage: /time
+    permission: pppopp3.time
+  gm:
+    description: changes game mode
+    usage: /gm
+    permission: pppopp3.gm
+    aliases: [gamemode]
+  god:
+    description: toggles god mode
+    usage: /celestia
+    permission: pppopp3.celestia
+    aliases: [celestia]
+  gethandbook:
+    description: gives the user a filly handbook.
+    usage: /gethandbook
+    permission: pppopp3.handbook
 permissions:
   pppopp3.pm.alertgroupchange:
     description: sends messages to players alerting to group changes
+    default: false
+  pppopp3.creativeadmin:
+    description: allows a person to bypass pppopp3 creative checks
+    default: false
+  pppopp3.flintnsteel:
+    description: allows user to use flint and steel
+    default: false
+  pppopp3.invisible.seeinvis:
+    description: allows a user to see invisible players logging in
+    default: false
+  pppopp3.seehidden:
+    description: allows the user to see hidden players
+    default: false
+  pppopp3.alertnote:
+    description: broadcasts whenever a players notes have been added to
+    default: false
+  pppopp3.tpbypass:
+    description: bypasses teleport cooldown
+    default: false
+  pppopp3.formattednickname:
+    description: bypasses format deletion for nicknames
+    default: false
+  pppopp3.protectionsbypass:
+    description: allows moderators to bypass spawn protections
     default: false
