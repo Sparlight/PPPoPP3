@@ -84,10 +84,9 @@ public class RemoteChest extends PSCmdExe{
 			boolean correct = true;
 			Material mat = null;
 			int matId;
-			try {
-				mat = Material.matchMaterial(args[0]);
-				correct = true;
-			} catch(IllegalArgumentException e) {
+			mat = Material.matchMaterial(args[0]);
+			correct = true;
+			if(mat == null) {
 				try {
 					matId = Integer.parseInt(args[0]);
 					mat = Material.getMaterial(matId);
