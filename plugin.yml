@@ -43,7 +43,7 @@ commands:
   transferchest:
     description: uses the transferchest utility
     usage: /transferchest [type]
-    aliases: [ts]
+    aliases: [tc]
     permission: pppopp3.remotechest
   finddeaths:
     description: finds the deaths of mobs in a radius around you
