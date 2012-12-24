@@ -20,35 +20,36 @@ public class JoinEvent extends Event implements Cancellable{
 
 	public JoinEvent(Player player, Pony pony, boolean isJoining){
 		joining = isJoining;
-		jmDef = ChatColor.RED+pony.getNickname()+ChatColor.AQUA+" has returned to Equestria!";
+		jmDef = ChatColor.RED + pony.getNickname() + ChatColor.AQUA + " has returned to Equestria!";
 		joinMessage = jmDef;
 		this.pony = pony;
 		this.player = player;
 	}
 
 	@Override
-	public boolean isCancelled() {
+	public boolean isCancelled(){
 		return cancelled;
 	}
 
 	@Override
-	public void setCancelled(boolean arg0) {
-		if(arg0){
+	public void setCancelled(boolean arg0){
+		if(arg0) {
 			joinMessage = null;
 		} else {
 			joinMessage = jmDef;
 		}
 		cancelled = arg0;
 	}
-	
+
 	public boolean isJoining(){
 		return joining;
 	}
 
 	@Override
-	public HandlerList getHandlers() {
+	public HandlerList getHandlers(){
 		return handlers;
 	}
+
 	public static HandlerList getHandlerList(){
 		return handlers;
 	}
@@ -56,14 +57,16 @@ public class JoinEvent extends Event implements Cancellable{
 	public void setJoinMessage(String msg){
 		joinMessage = msg;
 	}
+
 	public String getMsg(){
 		return joinMessage;
 	}
+
 	public Pony getPony(){
 		return pony;
 	}
 
-	public Player getPlayer() {
+	public Player getPlayer(){
 		return player;
 	}
 }
