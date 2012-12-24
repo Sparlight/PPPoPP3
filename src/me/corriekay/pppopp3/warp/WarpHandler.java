@@ -200,6 +200,11 @@ public class WarpHandler extends PSCmdExe{
 				w = Bukkit.getWorld(args[0]);
 			}
 			w = Equestria.get().getParentWorld(w);
+			Location l = spawns.get(w);
+			if(l == null) {
+				sendMessage(player, "Spawn not found!");
+				return true;
+			}
 			queueWarp(player, spawns.get(w));
 			return true;
 		}
