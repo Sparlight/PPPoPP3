@@ -54,6 +54,10 @@ public class Channel{
 				continue;
 			}
 			Player player = Bukkit.getPlayerExact(name);
+			if(player == null) {
+				System.out.println("Chat desync - Player null: " + name);
+				continue;
+			}
 			Pony pony = Ponyville.getPony(player);
 			ChatColor cc2 = pony.getChannelColor(this.name);
 			String msg2sendfinal;
@@ -62,9 +66,7 @@ public class Channel{
 			} else {
 				msg2sendfinal = message2send;
 			}
-			if(player != null) {
-				player.sendMessage(msg2sendfinal);
-			}
+			player.sendMessage(msg2sendfinal);
 		}
 		Bukkit.getConsoleSender().sendMessage(message2send);
 		if(log) {
