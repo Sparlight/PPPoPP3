@@ -1,7 +1,7 @@
 name: PPPoPP3
 author: Coraline Kay
 main: me.corriekay.pppopp3.Mane
-version: 0.1.3
+version: 0.1.4
 commands:
   testperm:
     description: tests permission for a player

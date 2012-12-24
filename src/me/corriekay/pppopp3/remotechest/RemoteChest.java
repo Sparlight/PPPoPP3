@@ -1,24 +1,32 @@
 package me.corriekay.pppopp3.remotechest;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 
+import mc.alk.arena.util.ExpUtil;
 import me.corriekay.pppopp3.modules.Equestria;
 import me.corriekay.pppopp3.ponyville.Pony;
 import me.corriekay.pppopp3.ponyville.Ponyville;
 import me.corriekay.pppopp3.utils.PSCmdExe;
+import me.corriekay.pppopp3.utils.Utils;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.meta.SkullMeta;
 
 public class RemoteChest extends PSCmdExe{
 
@@ -185,6 +193,51 @@ public class RemoteChest extends PSCmdExe{
 					HashMap<Integer,ItemStack> returnedItems = chestInv.addItem(playerInv.getItem(i));
 					playerInv.setItem(i, returnedItems.get(0));
 				} catch(NullPointerException e) {}
+			}
+		}
+	}
+
+	@EventHandler
+	public void onDeath(PlayerDeathEvent event){
+		if(Equestria.get().getParentWorld(event.getEntity().getWorld()).getName().equals("badlands")) {
+			event.setKeepLevel(false);
+			if(!(event.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent)) {
+				event.setDroppedExp(0);
+				event.setNewTotalExp(0);
+				return;
+			} else {
+				Player player = event.getEntity();
+				EntityDamageByEntityEvent edbee = (EntityDamageByEntityEvent)player.getLastDamageCause();
+				if(!(edbee.getDamager() instanceof Player)) {
+					event.setDroppedExp(0);
+					event.setNewTotalExp(0);
+					return;
+				}
+				Player killer = (Player)edbee.getDamager();
+				Pony pony = Ponyville.getPony(player);
+				Inventory inv = pony.getRemoteChest(Bukkit.getWorld("badlands"));
+				for(ItemStack is : inv.getContents()) {
+					event.getDrops().add(is);
+				}
+				inv.clear();
+				pony.saveRemoteChest(Bukkit.getWorld("badlands"));
+				pony.save();
+				ExpUtil.giveExperience(killer, event.getDroppedExp() + event.getNewExp());
+				event.setDroppedExp(0);
+				event.setNewTotalExp(0);
+				ItemStack is = new ItemStack(Material.SKULL_ITEM, 1, (byte)3);
+				SkullMeta sm = (SkullMeta)is.getItemMeta();
+				sm.setOwner(player.getName());
+				List<String> lore = new ArrayList<String>();
+				String weapon = "fists";
+				if(killer.getItemInHand() != null) {
+					weapon = killer.getItemInHand().getType().name();
+				}
+				lore.add("Killed by " + killer.getName() + " with " + weapon + "!");
+				lore.add("Time of death: " + Utils.getDate(System.currentTimeMillis()));
+				sm.setLore(lore);
+				is.setItemMeta(sm);
+				event.getDrops().add(is);
 			}
 		}
 	}

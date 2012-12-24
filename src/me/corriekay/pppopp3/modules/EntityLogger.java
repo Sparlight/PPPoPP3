@@ -224,28 +224,34 @@ public class EntityLogger extends PSCmdExe{
 
 	}
 
-	private void logAttack(String message, EntityType et, Location loc, long timestamp, Event event){
+	private void logAttack(final String message, final EntityType et, final Location loc, final long timestamp, final Event event){
 		//begin SparCode
-		String eName = et.getName().toLowerCase();
-		String world = loc.getWorld().getName();
-		int x = loc.getBlockX();
-		int y = loc.getBlockY();
-		int z = loc.getBlockZ();
+		final String eName = et.getName().toLowerCase();
+		final String world = loc.getWorld().getName();
+		final int x = loc.getBlockX();
+		final int y = loc.getBlockY();
+		final int z = loc.getBlockZ();
 		// Automatically create the table if it doesn't exist already
 		// If you want to go back to the old idea of grouping deaths by table per entity...
 		// replace any occurrence of entities with " + eName + "
 		// and delete the "entity varchar (32) not null line.
-		try {
-			executeSQL("CREATE TABLE IF NOT EXISTS entities (" + "entity varchar(32) not null, " + "timestamp varchar(20) not null, " + "world varchar(32) not null, " + "message varchar(128) null, " + "x varchar(6) not null, " + "y varchar(6) not null, " + "z varchar(6) not null)", true);
-			// Now write the entity stuff
-			executeSQL("INSERT INTO entities " + "VALUES ('" + eName + "', '" + timestamp + "', '" + world + "', '" + message + "', '" + x + "', '" + y + "', '" + z + "')", true);
-			//end SparCode
-		} catch(SQLException se) {
-			String exceptionMessage = "Error on event: " + se.getMessage() + "\n";
-			exceptionMessage += "\n--- SQL Command Error ---\n";
-			exceptionMessage += "MySQL Error Code:  " + se.getErrorCode() + " State: " + se.getSQLState();
-			PonyLogger.logListenerException(se, exceptionMessage, name, event.getClass().getCanonicalName());
-		}
+		Bukkit.getScheduler().runTaskAsynchronously(Mane.getInstance(), new Runnable() {
+			public void run(){
+				try {
+					executeSQL("CREATE TABLE IF NOT EXISTS entities (" + "entity varchar(32) not null, " + "timestamp varchar(20) not null, " + "world varchar(32) not null, " + "message varchar(128) null, " + "x varchar(6) not null, " + "y varchar(6) not null, " + "z varchar(6) not null)", true);
+					// Now write the entity stuff
+					executeSQL("INSERT INTO entities " + "VALUES ('" + eName + "', '" + timestamp + "', '" + world + "', '" + message + "', '" + x + "', '" + y + "', '" + z + "')", true);
+					//end SparCode
+				} catch(final SQLException se) {
+					final String exceptionMessage = "Error on event: " + se.getMessage() + "\n" + "\n--- SQL Command Error ---\n" + "MySQL Error Code:  " + se.getErrorCode() + " State: " + se.getSQLState();;
+					Bukkit.getScheduler().runTask(Mane.getInstance(), new Runnable() {
+						public void run(){
+							PonyLogger.logListenerException(se, exceptionMessage, name, event.getClass().getCanonicalName());
+						}
+					});
+				}
+			}
+		});
 	}
 
 	// Command usage:  /finddeaths [mob [creeper | skeleton | enderman | cow | sheep | chicken | slime | zombie | pig | player]] 
