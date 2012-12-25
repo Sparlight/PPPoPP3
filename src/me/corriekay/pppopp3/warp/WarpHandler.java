@@ -159,7 +159,7 @@ public class WarpHandler extends PSCmdExe{
 			if(global.size() > 0) {
 				String gWarps = ChatColor.RED + "Global Warps: ";
 				for(String warp : global.warps()) {
-					gWarps += ChatColor.RED + warp + ChatColor.WHITE + ", ";
+					gWarps += ChatColor.RED + warp + " " + getWorldTag(warpHandler.get("global").getWarp(warp)) + ChatColor.WHITE + ", ";
 				}
 				gWarps = gWarps.substring(0, gWarps.length() - 4);
 				sendMessage(sender, "Heres a list of global warps!");
@@ -171,7 +171,7 @@ public class WarpHandler extends PSCmdExe{
 				if(pWarps.size() > 0) {
 					String pWarp = ChatColor.RED + "Private Warps: ";
 					for(String warp : pWarps.warps()) {
-						pWarp += ChatColor.RED + warp + ChatColor.WHITE + ", ";
+						pWarp += ChatColor.RED + warp + " " + getWorldTag(pWarps.getWarp(warp)) + ChatColor.WHITE + ", ";
 					}
 					pWarp = pWarp.substring(0, pWarp.length() - 4);
 					sendMessage(player, "Heres a list of your private warps!");
@@ -460,6 +460,19 @@ public class WarpHandler extends PSCmdExe{
 			return true;
 		}
 		return true;
+	}
+
+	private String getWorldTag(Location warp){
+		World parent, world;
+		world = warp.getWorld();
+		parent = Equestria.get().getParentWorld(world);
+		String env = getEnvironmentTag(world.getEnvironment());
+		String name = parent.getName();
+		return name.equals("world") ? "(PvE," + env + ")" : name.equals("badlands") ? "(PvP," + env + ")" : name.equals("equestria") ? "(Creative," + env + ")" : "?";
+	}
+
+	private String getEnvironmentTag(Environment env){
+		return env == Environment.NORMAL ? "Overworld" : env == Environment.NETHER ? "Nether" : env == Environment.THE_END ? "The End" : "?";
 	}
 
 	private void queueWarp(Player player, Location loc){

@@ -142,7 +142,7 @@ public class PonyManager extends PSCmdExe{
 		if(cmd.getName().equals("list")) {
 			int counter = 0;
 			for(Player p : Bukkit.getOnlinePlayers()) {
-				if(!InvisibilityHandler.ih.isHidden(p.getName()) || sender.hasPermission("pppopp2.seehidden")) {
+				if(!InvisibilityHandler.ih.isHidden(p.getName()) || sender.hasPermission("pppopp3.seehidden")) {
 					counter++;
 				}
 			}
