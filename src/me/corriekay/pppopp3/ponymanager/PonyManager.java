@@ -8,6 +8,7 @@ import java.util.List;
 import me.corriekay.pppopp3.Mane;
 import me.corriekay.pppopp3.events.JoinEvent;
 import me.corriekay.pppopp3.events.QuitEvent;
+import me.corriekay.pppopp3.modules.Equestria;
 import me.corriekay.pppopp3.modules.InvisibilityHandler;
 import me.corriekay.pppopp3.ponyville.Pony;
 import me.corriekay.pppopp3.ponyville.Ponyville;
@@ -141,12 +142,12 @@ public class PonyManager extends PSCmdExe{
 		if(cmd.getName().equals("list")) {
 			int counter = 0;
 			for(Player p : Bukkit.getOnlinePlayers()) {
-				if(!InvisibilityHandler.ih.isHidden(p.getName()) || sender.hasPermission("pppopp2.seehidden")) {
+				if(!InvisibilityHandler.ih.isHidden(p.getName()) || sender.hasPermission("pppopp3.seehidden")) {
 					counter++;
 				}
 			}
 			sendMessage(sender, "There are " + counter + " of " + Bukkit.getServer().getMaxPlayers() + " max players online!");
-			boolean invsee = sender.hasPermission("pppopp2.seehidden");
+			boolean invsee = sender.hasPermission("pppopp3.seehidden");
 			HashSet<String> admins = (HashSet<String>)groupsList.get("admin").clone();
 			HashSet<String> opony = (HashSet<String>)groupsList.get("opony").clone();
 			HashSet<String> pegasus = (HashSet<String>)groupsList.get("pegasus").clone();
@@ -354,7 +355,12 @@ public class PonyManager extends PSCmdExe{
 	private String createList(String message, HashSet<String> players){
 		for(String p : players) {
 			Player player = Bukkit.getPlayerExact(p);
-			message += ChatColor.RED + player.getDisplayName() + ChatColor.WHITE + ", ";
+			if(player == null) {
+				continue;
+			}
+			World w = Equestria.get().getParentWorld(player.getWorld());
+			String world = w.getName().equals("world") ? " (PvE)" : w.getName().equals("equestria") ? " (Creative)" : w.getName().equals("badlands") ? " (PvP)" : "?";
+			message += ChatColor.RED + player.getDisplayName() + ChatColor.RED + world + ChatColor.WHITE + ", ";
 		}
 		message = message.substring(0, message.length() - 4);
 		return message;
