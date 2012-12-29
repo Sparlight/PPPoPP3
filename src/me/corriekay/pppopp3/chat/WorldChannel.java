@@ -37,6 +37,10 @@ public class WorldChannel extends Channel{
 				continue;
 			}
 			Player player = Bukkit.getPlayerExact(name);
+			if(player == null) {
+				System.out.println("Chat desync - Player null: " + name);
+				continue;
+			}
 			Pony pony = Ponyville.getPony(player);
 			ChatColor cc2 = pony.getChannelColor(this.name);
 			String msg2sendfinal;
@@ -45,11 +49,9 @@ public class WorldChannel extends Channel{
 			} else {
 				msg2sendfinal = message2send;
 			}
-			if(player != null) {
-				World recieverworld = Equestria.get().getParentWorld(player.getWorld());
-				if(recieverworld.getName().equals(senderWorld.getName()) || player.hasPermission("pppopp3.chat.staff")) {
-					player.sendMessage(msg2sendfinal);
-				}
+			World recieverworld = Equestria.get().getParentWorld(player.getWorld());
+			if(recieverworld.getName().equals(senderWorld.getName()) || player.hasPermission("pppopp3.chat.staff")) {
+				player.sendMessage(msg2sendfinal);
 			}
 		}
 		Bukkit.getConsoleSender().sendMessage(message2send);

@@ -25,6 +25,8 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.hanging.HangingBreakByEntityEvent;
+import org.bukkit.inventory.ItemStack;
 
 public class EntityLogger extends PSCmdExe{
 
@@ -133,6 +135,36 @@ public class EntityLogger extends PSCmdExe{
 			}
 			logAttack(message, EntityType.CREEPER, c.getLocation(), System.currentTimeMillis(), event);
 		}
+	}
+
+	@EventHandler
+	public void hangingBreak(HangingBreakByEntityEvent event){
+		String breaker, subtype, type;
+		Entity e = event.getRemover();
+		if(e instanceof Player) {
+			breaker = "Player " + ((Player)e).getName();
+		} else {
+			breaker = e.getType().toString();
+		}
+		Hanging h = event.getEntity();
+		if(h instanceof ItemFrame) {
+			type = "Item Frame";
+			ItemStack stack = ((ItemFrame)h).getItem();
+			if(stack == null) {
+				subtype = "empty";
+			} else {
+				subtype = stack.getType().toString();
+			}
+		} else if(h instanceof Painting) {
+			type = "Painting";
+			Painting p = (Painting)h;
+			subtype = "Painting number " + p.getArt().getId();
+		} else {
+			subtype = "unknown";
+			type = "hanging";
+		}
+		String message = breaker + " broke " + subtype + " " + type;
+		logAttack(message, h.getType(), h.getLocation(), System.currentTimeMillis(), event);
 	}
 
 	@EventHandler
